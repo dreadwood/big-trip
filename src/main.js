@@ -1,5 +1,10 @@
 'use strict';
 
+const RenderPosition = {
+  AFTER_BEGIN: `afterbegin`,
+  BEFOR_END: `beforeend`,
+};
+
 const createTripInfoTemplate = () => {
   return (
     `<section class="trip-main__trip-info  trip-info">
@@ -391,3 +396,7 @@ const createStatisticTemplate = () => {
     </section>`
   )
 }
+
+const render = (container, template, place = RenderPosition.BEFOR_END) => {
+  container.insertAdjacentHTML(place, template);
+};
