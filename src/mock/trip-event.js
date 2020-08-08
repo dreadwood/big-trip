@@ -13,18 +13,18 @@ const SentencesDescription = {
   MAX: 5,
 };
 
-const EVENT_TYPES = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `transport`,
-  `drive`,
-  `Flight`,
-  `Check-in`,
-  `sightseeing`,
-  `restaurant`,
-];
+export const EVENT_TYPES = {
+  'taxi': `Taxi to`,
+  'bus': `Bus to`,
+  'train': `Train to`,
+  'ship': `Ship to`,
+  'transport': `Transport to`,
+  'drive': `Drive to`,
+  'flight': `Flight to`,
+  'check-in': `Check-in in`,
+  'sightseeing': `Sightseeing in`,
+  'restaurant': `Restaurant in`,
+};
 
 const PARTS_OF_DESCRIPTION = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -52,60 +52,86 @@ const CITIES = [
   `Bern`,
 ];
 
-const OffersType = {
+const TypesOffers = {
   'flight': [
     {
+      type: `luggage`,
       offer: `Add luggage`,
       price: 30,
     },
     {
+      type: `comfort`,
       offer: `Switch to comfort class`,
       price: 100,
     },
     {
+      type: `meal`,
       offer: `Add meal`,
       price: 15,
     },
     {
+      type: `seats`,
       offer: `Choose seats`,
       price: 5,
     },
     {
+      type: `train`,
       offer: `Travel by train`,
       price: 40,
     },
   ],
   'check-in': [
     {
-      offer: `Airport drop-off`,
-      price: 25,
+      type: `breakfast`,
+      offer: `Add breakfast`,
+      price: 50,
     },
     {
-      offer: `Airport pickup`,
-      price: 25,
-    },
-    {
+      type: `ironing`,
       offer: `Ironing service`,
       price: 15,
     },
     {
-      offer: `Swimming pool`,
-      price: 10,
+      type: `spa`,
+      offer: `Spa`,
+      price: 80,
+    },
+  ],
+  'taxi': [
+    {
+      type: `uber`,
+      offer: `Order Uber`,
+      price: 20,
+    },
+  ],
+  'drive': [
+    {
+      type: `rent`,
+      offer: `Rent a car`,
+      price: 200,
+    },
+  ],
+  'sightseeing': [
+    {
+      type: `tickets`,
+      offer: `Book tickets`,
+      price: 40,
     },
     {
-      offer: `Spa`,
-      price: 20,
+      type: `lunch`,
+      offer: `Lunch in city`,
+      price: 30,
     },
   ],
 };
 
 
-const getRandomMinutes = (maxMinutes) => {
+const getRoundedValue = (maxValue) => {
   const rounding = 5;
-  const minutes = getRandomInteger(maxMinutes);
-  const remainder = minutes % rounding;
+  const value = getRandomInteger(maxValue);
+  const remainder = value % rounding;
 
-  return minutes - remainder;
+  return value - remainder;
 };
 
 const generateDate = () => {
@@ -114,7 +140,7 @@ const generateDate = () => {
   const maxMinutesGap = 59;
   const daysGap = getRandomInteger(maxDaysGap);
   const hoursGap = getRandomInteger(maxHoursGap);
-  const minutesGap = getRandomMinutes(maxMinutesGap);
+  const minutesGap = getRoundedValue(maxMinutesGap);
 
   const currentDate = new Date(2020, 7, 15, 10, 0, 0, 0);
 
@@ -125,17 +151,31 @@ const generateDate = () => {
   return new Date(currentDate);
 };
 
-export const generateTripEvents = () => {
+const getRandomOffers = (typeEvent) => {
+  if (!TypesOffers.hasOwnProperty(typeEvent)) {
+    return null;
+  }
+
+  const eventOffers = TypesOffers[typeEvent];
+  const offersCount = eventOffers.length;
+
+  const offers = new Array(getRandomInteger(1, offersCount))
+    .fill(``).map(() => getRandomArrayItems(eventOffers));
+
+  return offers;
+};
+
+export const generateTripEvent = () => {
   const id = String(new Date().getTime() + Math.random());
 
-  const type = getRandomArrayItems(EVENT_TYPES);
+  const typeEvent = getRandomArrayItems(Object.keys(EVENT_TYPES));
   const city = getRandomArrayItems(CITIES);
-  const cost = getRandomInteger(MAX_PRICE);
+  const cost = getRoundedValue(MAX_PRICE);
 
   const startDate = generateDate();
-  const endDate = new Date(startDate.getTime() + getRandomMinutes(MAX_TIME_EVENT) * 60 * 1000);
+  const endDate = new Date(startDate.getTime() + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
 
-  const offers = type.toLowerCase() in OffersType ? OffersType[type.toLowerCase()] : null;
+  const offers = getRandomInteger() ? getRandomOffers(typeEvent) : null;
 
   const photos = new Array(getRandomInteger(PhotosDescription.MIN, PhotosDescription.MAX))
     .fill(``).map(() => `http://picsum.photos/248/152?r=${Math.random()}`);
@@ -145,15 +185,13 @@ export const generateTripEvents = () => {
 
   return {
     id,
-    type,
+    typeEvent,
     offers,
     city,
     startDate,
     endDate,
     cost,
-    destination: {
-      description,
-      photos,
-    },
+    description,
+    photos,
   };
 };
