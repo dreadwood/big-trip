@@ -56,70 +56,70 @@ const TypesOffers = {
   'flight': [
     {
       type: `luggage`,
-      offer: `Add luggage`,
+      description: `Add luggage`,
       price: 30,
     },
     {
       type: `comfort`,
-      offer: `Switch to comfort class`,
+      description: `Switch to comfort class`,
       price: 100,
     },
     {
       type: `meal`,
-      offer: `Add meal`,
+      description: `Add meal`,
       price: 15,
     },
     {
       type: `seats`,
-      offer: `Choose seats`,
+      description: `Choose seats`,
       price: 5,
     },
     {
       type: `train`,
-      offer: `Travel by train`,
+      description: `Travel by train`,
       price: 40,
     },
   ],
   'check-in': [
     {
       type: `breakfast`,
-      offer: `Add breakfast`,
+      description: `Add breakfast`,
       price: 50,
     },
     {
       type: `ironing`,
-      offer: `Ironing service`,
+      description: `Ironing service`,
       price: 15,
     },
     {
       type: `spa`,
-      offer: `Spa`,
+      description: `Spa`,
       price: 80,
     },
   ],
   'taxi': [
     {
       type: `uber`,
-      offer: `Order Uber`,
+      description: `Order Uber`,
       price: 20,
     },
   ],
   'drive': [
     {
       type: `rent`,
-      offer: `Rent a car`,
+      description: `Rent a car`,
       price: 200,
     },
   ],
   'sightseeing': [
     {
       type: `tickets`,
-      offer: `Book tickets`,
+      description: `Book tickets`,
       price: 40,
     },
     {
       type: `lunch`,
-      offer: `Lunch in city`,
+      description: `Lunch in city`,
       price: 30,
     },
   ],
@@ -168,14 +168,14 @@ const getRandomOffers = (typeEvent) => {
 export const generateTripEvent = () => {
   const id = String(new Date().getTime() + Math.random());
 
-  const typeEvent = getRandomArrayItems(Object.keys(EVENT_TYPES));
+  const type = getRandomArrayItems(Object.keys(EVENT_TYPES));
   const city = getRandomArrayItems(CITIES);
   const cost = getRoundedValue(MAX_PRICE);
 
   const startDate = generateDate();
   const endDate = new Date(startDate.getTime() + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
 
-  const offers = getRandomInteger() ? getRandomOffers(typeEvent) : null;
+  const offers = getRandomInteger() ? getRandomOffers(type) : null;
 
   const photos = new Array(getRandomInteger(PhotosDescription.MIN, PhotosDescription.MAX))
     .fill(``).map(() => `http://picsum.photos/248/152?r=${Math.random()}`);
@@ -185,7 +185,7 @@ export const generateTripEvent = () => {
 
   return {
     id,
-    typeEvent,
+    type,
     offers,
     city,
     startDate,

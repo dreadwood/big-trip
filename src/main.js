@@ -8,8 +8,9 @@ import {createEventTemplate} from './view/event.js';
 import {createEventEditTemplate} from './view/event-edit.js';
 // import {createPageMessageTemplate} from './view/page-message.js';
 // import {createStatisticTemplate} from './view/statistic.js';
+import {generateTripEvent} from './mock/trip-event.js';
 
-const EVENT_COUNT = 3;
+const EVENT_COUNT = 20;
 
 const RenderPosition = {
   AFTER_BEGIN: `afterbegin`,
@@ -19,6 +20,8 @@ const RenderPosition = {
 const render = (container, template, place = RenderPosition.BEFOR_END) => {
   container.insertAdjacentHTML(place, template);
 };
+
+const tripEvents = new Array(EVENT_COUNT).fill(``).map(generateTripEvent);
 
 const bodyElement = document.querySelector(`.page-body`);
 const headerMainElement = bodyElement.querySelector(`.trip-main`);
@@ -38,5 +41,5 @@ render(dayListElement, createDayTemplate());
 
 const eventListElement = dayListElement.querySelector(`.trip-events__list`);
 for (let i = 0; i < EVENT_COUNT; i++) {
-  render(eventListElement, createEventTemplate());
+  render(eventListElement, createEventTemplate(tripEvents[i]));
 }
