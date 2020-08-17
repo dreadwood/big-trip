@@ -33,13 +33,13 @@ render(headerControlsElement, createMenuTemplate(), RenderPosition.AFTER_BEGIN);
 render(headerControlsElement, createFiltersTemplate());
 
 render(pageContainerElement, createSortingTemplate());
-render(pageContainerElement, createEventEditTemplate());
+render(pageContainerElement, createEventEditTemplate(tripEvents[0]));
 render(pageContainerElement, createDayListTemplate());
 
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
 render(dayListElement, createDayTemplate());
 
 const eventListElement = dayListElement.querySelector(`.trip-events__list`);
-for (let i = 0; i < EVENT_COUNT; i++) {
+for (let i = 1; i < EVENT_COUNT; i++) {
   render(eventListElement, createEventTemplate(tripEvents[i]));
 }

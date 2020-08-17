@@ -13,6 +13,22 @@ const SentencesDescription = {
   MAX: 5,
 };
 
+export const EVENT_TRANSPORT = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`
+];
+
+export const EVENT_ACTIVITY = [
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
 export const EVENT_TYPES = {
   'taxi': `Taxi to`,
   'bus': `Bus to`,
@@ -40,7 +56,7 @@ const PARTS_OF_DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-const CITIES = [
+export const CITIES = [
   `Amsterdam`,
   `Chamonix`,
   `Geneva`,
@@ -52,7 +68,7 @@ const CITIES = [
   `Bern`,
 ];
 
-const TypesOffers = {
+export const TypesOffers = {
   'flight': [
     {
       type: `luggage`,
@@ -175,6 +191,7 @@ export const generateTripEvent = () => {
   const startDate = generateDate();
   const endDate = new Date(startDate.getTime() + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
 
+  const isFavorites = getRandomInteger() ? true : false;
   const offers = getRandomInteger() ? getRandomOffers(type) : null;
 
   const photos = new Array(getRandomInteger(PhotosDescription.MIN, PhotosDescription.MAX))
@@ -191,7 +208,10 @@ export const generateTripEvent = () => {
     startDate,
     endDate,
     cost,
-    description,
-    photos,
+    isFavorites,
+    destination: {
+      description,
+      photos,
+    }
   };
 };

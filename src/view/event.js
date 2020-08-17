@@ -1,23 +1,23 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
 
-const addZeroNumber = (number) => {
+const addNumberWithZero = (number) => { // 6 => 06
   return (number < 10) ? `0${number}` : `${number}`;
 };
 
-const getTime = (date) => {
+const getTime = (date) => { // 19:26
   const minutes = date.getUTCMinutes();
 
-  return `${date.getHours()}:${addZeroNumber(minutes)}`;
+  return `${date.getHours()}:${addNumberWithZero(minutes)}`;
 };
 
-const getFormatDate = (date) => {
+const getFormatDate = (date) => { // 2020-08-16
   const mounth = date.getMonth() + 1;
   const day = date.getDate();
 
-  return `${date.getFullYear()}-${addZeroNumber(mounth)}-${addZeroNumber(day)}`;
+  return `${date.getFullYear()}-${addNumberWithZero(mounth)}-${addNumberWithZero(day)}`;
 };
 
-const getDuration = (durationInMs) => {
+const getDuration = (durationInMs) => { // 1H 25M
   const durationInMin = durationInMs / (60 * 1000);
 
   return (durationInMin > 60)
