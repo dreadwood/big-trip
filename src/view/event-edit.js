@@ -1,4 +1,5 @@
-import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY, CITIES, TypesOffers} from '../mock/trip-event.js';
+import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY, CITIES} from '../mock/trip-event.js';
+import {TYPES_OF_OFFERS} from '../mock/offers.js';
 
 const addNumberWithZero = (number) => String(number).padStart(2, `0`);
 
@@ -162,14 +163,14 @@ const createOfferTemplate = ({type, description, price}, isChecked) => {
 };
 
 const createOffersSectionTemplate = (selectedType, selectedOffers) => {
-  const selectedTypeOffers = selectedOffers.map((offer) => offer.type);
+  const selectedTypeOffers = [...selectedOffers].map((offer) => offer.type);
 
   return (
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        ${TypesOffers[selectedType]
+        ${TYPES_OF_OFFERS.find((item) => item.type === selectedType)
           .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.type)))
           .join(`\n`)}
       </div>

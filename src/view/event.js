@@ -28,7 +28,7 @@ const getDuration = (durationInMs) => { // 1H 25M
 const createOffersTemplate = (offers) => {
   return (
     `<ul class="event__selected-offers">
-      ${offers.map(({description, price}) => `<li class="event__offer">
+      ${[...offers].map(({description, price}) => `<li class="event__offer">
         <span class="event__offer-title">${description}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>

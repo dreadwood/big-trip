@@ -1,4 +1,5 @@
 import {getRandomInteger, getRandomArrayItems} from '../utils.js';
+import {TYPES_OF_OFFERS} from './offers.js';
 
 const MAX_PRICE = 1000;
 const MAX_TIME_EVENT = 180;
@@ -68,80 +69,6 @@ export const CITIES = [
   `Bern`,
 ];
 
-export const TypesOffers = {
-  'flight': [
-    {
-      type: `luggage`,
-      description: `Add luggage`,
-      price: 30,
-    },
-    {
-      type: `comfort`,
-      description: `Switch to comfort class`,
-      price: 100,
-    },
-    {
-      type: `meal`,
-      description: `Add meal`,
-      price: 15,
-    },
-    {
-      type: `seats`,
-      description: `Choose seats`,
-      price: 5,
-    },
-    {
-      type: `train`,
-      description: `Travel by train`,
-      price: 40,
-    },
-  ],
-  'check-in': [
-    {
-      type: `breakfast`,
-      description: `Add breakfast`,
-      price: 50,
-    },
-    {
-      type: `ironing`,
-      description: `Ironing service`,
-      price: 15,
-    },
-    {
-      type: `spa`,
-      description: `Spa`,
-      price: 80,
-    },
-  ],
-  'taxi': [
-    {
-      type: `uber`,
-      description: `Order Uber`,
-      price: 20,
-    },
-  ],
-  'drive': [
-    {
-      type: `rent`,
-      description: `Rent a car`,
-      price: 200,
-    },
-  ],
-  'sightseeing': [
-    {
-      type: `tickets`,
-      description: `Book tickets`,
-      price: 40,
-    },
-    {
-      type: `lunch`,
-      description: `Lunch in city`,
-      price: 30,
-    },
-  ],
-};
-
-
 const getRoundedValue = (maxValue) => {
   const rounding = 5;
   const value = getRandomInteger(maxValue);
@@ -168,15 +95,19 @@ const generateDate = () => {
 };
 
 const getRandomOffers = (typeEvent) => {
-  if (!TypesOffers.hasOwnProperty(typeEvent)) {
+  const typeIndex = TYPES_OF_OFFERS.findIndex((item) => item.type === typeEvent);
+
+  if (typeIndex === -1) {
     return null;
   }
 
-  const eventOffers = TypesOffers[typeEvent];
+  const eventOffers = TYPES_OF_OFFERS[typeIndex];
   const offersCount = eventOffers.length;
 
-  const offers = new Array(getRandomInteger(1, offersCount))
-    .fill(``).map(() => getRandomArrayItems(eventOffers));
+  const offers = new Set();
+  for (let i = 0; i < offersCount; i++) {
+    offers.add(getRandomArrayItems(eventOffers.offers));
+  }
 
   return offers;
 };
