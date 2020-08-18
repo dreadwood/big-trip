@@ -1,6 +1,7 @@
 import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES} from '../mock/destinations.js';
+import {getTime, getDateWithSlash, capitalizeStr} from '../utils.js';
 
 const BLANK_EVENT = {
   id: null,
@@ -13,24 +14,6 @@ const BLANK_EVENT = {
   destination: null, // брать инфу из базы данных по city и проверить пустой массив
   offers: null,
 };
-
-const addNumberWithZero = (number) => String(number).padStart(2, `0`);
-
-const getTime = (date) => { // 19:26
-  const minutes = date.getUTCMinutes();
-
-  return `${date.getHours()}:${addNumberWithZero(minutes)}`;
-};
-
-const getFormatDate = (date) => { // 2020-08-16
-  const day = addNumberWithZero(date.getDate());
-  const mounth = addNumberWithZero(date.getMonth() + 1);
-  const year = String(date.getFullYear()).slice(2);
-
-  return `${day}/${mounth}/${year}`;
-};
-
-const capitalizeStr = (str) => (!str) ? str : str[0].toUpperCase() + str.slice(1);
 
 const createEventTypeTemplate = (eventType, isChecked = false) => {
   return (
@@ -121,7 +104,7 @@ const createDataInputTemplate = (startDate, endDate) => {
         id="event-start-time"
         type="text"
         name="event-start-time"
-        value="${getFormatDate(startDate)} ${getTime(startDate)}"
+        value="${getDateWithSlash(startDate)} ${getTime(startDate)}"
       >
       &mdash;
       <label class="visually-hidden" for="event-end-time">
@@ -132,7 +115,7 @@ const createDataInputTemplate = (startDate, endDate) => {
         id="event-end-time"
         type="text"
         name="event-end-time"
-        value="${getFormatDate(endDate)} ${getTime(endDate)}"
+        value="${getDateWithSlash(endDate)} ${getTime(endDate)}"
       >
     </div>`
   );

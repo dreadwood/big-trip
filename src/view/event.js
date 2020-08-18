@@ -1,21 +1,5 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
-
-const addNumberWithZero = (number) => { // 6 => 06
-  return (number < 10) ? `0${number}` : `${number}`;
-};
-
-const getTime = (date) => { // 19:26
-  const minutes = date.getUTCMinutes();
-
-  return `${date.getHours()}:${addNumberWithZero(minutes)}`;
-};
-
-const getFormatDate = (date) => { // 2020-08-16
-  const mounth = date.getMonth() + 1;
-  const day = date.getDate();
-
-  return `${date.getFullYear()}-${addNumberWithZero(mounth)}-${addNumberWithZero(day)}`;
-};
+import {getTime, getDateWithDash} from '../utils.js';
 
 const getDuration = (durationInMs) => { // 1H 25M
   const durationInMin = durationInMs / (60 * 1000);
@@ -50,8 +34,8 @@ export const createEventTemplate = (event) => {
   const city = destination.city;
   const startTime = getTime(startDate);
   const endTime = getTime(endDate);
-  const startFormatDate = getFormatDate(startDate);
-  const endFormatDate = getFormatDate(endDate);
+  const startFormatDate = getDateWithDash(startDate);
+  const endFormatDate = getDateWithDash(endDate);
   const duration = getDuration(endDate - startDate);
 
   const offersTemplate = selectedOffers ? createOffersTemplate(selectedOffers) : ``;

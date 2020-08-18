@@ -14,8 +14,8 @@ export const createFiltersTemplate = () => {
       </div>
 
       <div class="trip-filters__filter">
-        <input i
-          d="filter-future"
+        <input
+          id="filter-future"
           class="trip-filters__filter-input  visually-hidden"
           type="radio"
           name="trip-filter"
