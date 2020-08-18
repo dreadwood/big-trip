@@ -5,13 +5,12 @@ import {getTime, getDateWithSlash, capitalizeStr} from '../utils.js';
 
 const BLANK_EVENT = {
   id: null,
-  type: Object.keys(EVENT_TYPES)[0],
-  city: CITIES[0],
+  type: Object.keys(EVENT_TYPES)[1],
   startDate: new Date(),
   endDate: new Date(),
   cost: null,
   isFavorites: false,
-  destination: null, // брать инфу из базы данных по city и проверить пустой массив
+  destination: null,
   offers: null,
 };
 
@@ -232,7 +231,7 @@ export const createEventEditTemplate = (event = BLANK_EVENT) => {
     selectedOffers,
   } = event;
 
-  const city = destination.city;
+  const city = destination ? destination.city : ``;
 
   const eventOffers = TYPES_OF_OFFERS.find((item) => item.type === type).offers;
   const offersCount = eventOffers.length;
