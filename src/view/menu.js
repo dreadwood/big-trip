@@ -1,4 +1,4 @@
-const tabs = [
+const TABS = [
   `Table`,
   `Stats`
 ];
@@ -6,7 +6,7 @@ const tabs = [
 export const createMenuTemplate = (selectedFilter = `Table`) => {
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
-      ${tabs.map((item) => `<a
+      ${TABS.map((item) => `<a
         class="trip-tabs__btn ${item === selectedFilter ? `trip-tabs__btn--active` : ``}"
         href="#"
       >${item}</a>`).join(`\n`)}

@@ -1,6 +1,6 @@
 import {capitalizeStr} from '../utils.js';
 
-const filters = [
+const FILTERS = [
   `everything`,
   `future`,
   `past`,
@@ -9,7 +9,7 @@ const filters = [
 export const createFiltersTemplate = (selectedFilter = `everything`) => {
   return (
     `<form class="trip-filters" action="#" method="get">
-      ${filters.map((filter) => `<div class="trip-filters__filter">
+      ${FILTERS.map((filter) => `<div class="trip-filters__filter">
         <input
           id="filter-${filter}"
           class="trip-filters__filter-input visually-hidden"
