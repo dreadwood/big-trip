@@ -40,20 +40,21 @@ const createOffersTemplate = (offers) => {
 export const createEventTemplate = (event) => {
   const {
     type,
-    offers,
-    city,
+    selectedOffers,
     startDate,
     endDate,
     cost,
+    destination,
   } = event;
 
+  const city = destination.city;
   const startTime = getTime(startDate);
   const endTime = getTime(endDate);
   const startFormatDate = getFormatDate(startDate);
   const endFormatDate = getFormatDate(endDate);
   const duration = getDuration(endDate - startDate);
 
-  const offersTemplate = offers ? createOffersTemplate(offers) : ``;
+  const offersTemplate = selectedOffers ? createOffersTemplate(selectedOffers) : ``;
 
   return (
     `<li class="trip-events__item">

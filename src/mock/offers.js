@@ -1,5 +1,41 @@
 export const TYPES_OF_OFFERS = [
   {
+    type: `taxi`,
+    offers: [
+      {
+        type: `uber`,
+        description: `Order Uber`,
+        price: 20,
+      },
+    ],
+  },
+  {
+    type: `bus`,
+    offers: []
+  },
+  {
+    type: `train`,
+    offers: []
+  },
+  {
+    type: `ship`,
+    offers: []
+  },
+  {
+    type: `transport`,
+    offers: []
+  },
+  {
+    type: `drive`,
+    offers: [
+      {
+        type: `rent`,
+        description: `Rent a car`,
+        price: 200,
+      },
+    ],
+  },
+  {
     type: `flight`,
     offers: [
       {
@@ -50,26 +86,6 @@ export const TYPES_OF_OFFERS = [
     ],
   },
   {
-    type: `taxi`,
-    offers: [
-      {
-        type: `uber`,
-        description: `Order Uber`,
-        price: 20,
-      },
-    ],
-  },
-  {
-    type: `drive`,
-    offers: [
-      {
-        type: `rent`,
-        description: `Rent a car`,
-        price: 200,
-      },
-    ],
-  },
-  {
     type: `sightseeing`,
     offers: [
       {
@@ -83,5 +99,9 @@ export const TYPES_OF_OFFERS = [
         price: 30,
       },
     ],
+  },
+  {
+    type: `restaurant`,
+    offers: []
   },
 ];

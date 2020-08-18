@@ -1,5 +1,18 @@
-import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY, CITIES} from '../mock/trip-event.js';
+import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
+import {CITIES} from '../mock/destinations.js';
+
+const BLANK_EVENT = {
+  id: null,
+  type: Object.keys(EVENT_TYPES)[0],
+  city: CITIES[0],
+  startDate: new Date(),
+  endDate: new Date(),
+  cost: null,
+  isFavorites: false,
+  destination: null, // брать инфу из базы данных по city и проверить пустой массив
+  offers: null,
+};
 
 const addNumberWithZero = (number) => String(number).padStart(2, `0`);
 
@@ -143,56 +156,6 @@ const createPriceInputTemplate = (cost) => {
   );
 };
 
-const createOfferTemplate = ({type, description, price}, isChecked) => {
-  return (
-    `<div class="event__offer-selector">
-      <input
-        class="event__offer-checkbox visually-hidden"
-        id="event-offer-${type}"
-        type="checkbox"
-        name="event-offer-${type}"
-        ${isChecked ? `checked` : ``}
-      >
-      <label class="event__offer-label" for="event-offer-${type}">
-        <span class="event__offer-title">${description}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </label>
-    </div>`
-  );
-};
-
-const createOffersSectionTemplate = (selectedType, selectedOffers) => {
-  const selectedTypeOffers = [...selectedOffers].map((offer) => offer.type);
-
-  return (
-    `<section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-      <div class="event__available-offers">
-        ${TYPES_OF_OFFERS.find((item) => item.type === selectedType)
-          .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.type)))
-          .join(`\n`)}
-      </div>
-    </section>`
-  );
-};
-
-const createDestinationSectionTemplate = ({photos, description}) => {
-  return (
-    `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
-
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(`\n`)}
-        </div>
-      </div>
-    </section>`
-  );
-};
-
 const createButtonsTemplate = (id, isFavorites) => {
   return (
     `<button class="event__save-btn btn btn--blue" type="submit">Save</button>
@@ -222,34 +185,78 @@ const createButtonsTemplate = (id, isFavorites) => {
   );
 };
 
-const BLANK_EVENT = {
-  id: null,
-  type: Object.keys(EVENT_TYPES)[0],
-  city: CITIES[0],
-  startDate: new Date(),
-  endDate: new Date(),
-  cost: null,
-  isFavorites: false,
-  destination: null, // брать инфу из базы данных по city и проверить пустой массив
-  offers: null,
+const createOfferTemplate = ({type, description, price}, isChecked) => {
+  return (
+    `<div class="event__offer-selector">
+      <input
+        class="event__offer-checkbox visually-hidden"
+        id="event-offer-${type}"
+        type="checkbox"
+        name="event-offer-${type}"
+        ${isChecked ? `checked` : ``}
+      >
+      <label class="event__offer-label" for="event-offer-${type}">
+        <span class="event__offer-title">${description}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`
+  );
+};
+
+const createOffersSectionTemplate = (eventOffers, selectedOffers) => {
+  const selectedTypeOffers = selectedOffers
+    ? [...selectedOffers].map((offer) => offer.type)
+    : [];
+
+  return (
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${eventOffers
+          .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.type)))
+          .join(`\n`)}
+      </div>
+    </section>`
+  );
+};
+
+const createDestinationSectionTemplate = ({photos, description}) => {
+  return (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${description}</p>
+
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(`\n`)}
+        </div>
+      </div>
+    </section>`
+  );
 };
 
 export const createEventEditTemplate = (event = BLANK_EVENT) => {
   const {
     id,
     type,
-    city,
     startDate,
     endDate,
     cost,
     isFavorites,
     destination,
-    offers,
+    selectedOffers,
   } = event;
 
-  const eventDetailsTemplate = () => (offers || destination)
+  const city = destination.city;
+
+  const eventOffers = TYPES_OF_OFFERS.find((item) => item.type === type).offers;
+  const offersCount = eventOffers.length;
+
+  const eventDetailsTemplate = () => (offersCount || destination)
     ? `<section class="event__details">
-      ${offers ? createOffersSectionTemplate(type, offers) : ``}
+      ${offersCount ? createOffersSectionTemplate(eventOffers, selectedOffers) : ``}
       ${destination ? createDestinationSectionTemplate(destination) : ``}
     </section>`
     : ``;
