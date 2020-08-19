@@ -36,4 +36,10 @@ export const getDateWithSlash = (date) => { // 16/08/2020
   return `${day}/${mounth}/${year}`;
 };
 
+export const getShortDate = (date) => { // 19 AUG
+  return date
+    .toLocaleString(`en-GB`, {day: `numeric`, month: `short`})
+    .toUpperCase();
+};
+
 export const capitalizeStr = (str) => (!str) ? str : str[0].toUpperCase() + str.slice(1);

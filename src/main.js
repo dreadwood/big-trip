@@ -21,14 +21,16 @@ const render = (container, template, place = RenderPosition.BEFOR_END) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const tripEvents = new Array(EVENT_COUNT).fill(``).map(generateTripEvent);
+const tripEvents = new Array(EVENT_COUNT).fill(``)
+  .map(generateTripEvent)
+  .sort((a, b) => a.startDate - b.startDate);
 
 const bodyElement = document.querySelector(`.page-body`);
 const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const pageContainerElement = bodyElement.querySelector(`.trip-events`);
 
-render(headerMainElement, createTripInfoTemplate(), RenderPosition.AFTER_BEGIN);
+render(headerMainElement, createTripInfoTemplate(tripEvents), RenderPosition.AFTER_BEGIN);
 render(headerControlsElement, createMenuTemplate(), RenderPosition.AFTER_BEGIN);
 render(headerControlsElement, createFiltersTemplate());
 
