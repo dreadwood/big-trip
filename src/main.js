@@ -20,6 +20,30 @@ const events = new Array(EVENT_COUNT).fill(``)
 const datesEvents = [...new Set(events
   .map((event) => event.startDate.toDateString()))];
 
+const renderEvent = (container, event) => {
+  const eventComponent = new EventView(event);
+  const eventEditComponent = new EventEditView(event);
+
+  const replaceCardToForm = () => {
+    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replaceCardToForm();
+  });
+
+  eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+
+  render(container, eventComponent.getElement());
+};
+
 const bodyElement = document.querySelector(`.page-body`);
 const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
@@ -30,7 +54,6 @@ render(headerControlsElement, new MenuView().getElement(), RenderPosition.AFTER_
 render(headerControlsElement, new FiltersView().getElement());
 
 render(pageContainerElement, new SortingView().getElement());
-render(pageContainerElement, new EventEditView(events[0]).getElement());
 render(pageContainerElement, new DayListView().getElement());
 
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
@@ -41,5 +64,5 @@ datesEvents.forEach((date, i) => {
 
   events
     .filter((event) => event.startDate.toDateString() === date)
-    .forEach((event) => render(eventListElement, new EventView(event).getElement()));
+    .forEach((event) => renderEvent(eventListElement, event));
 });
