@@ -1,6 +1,6 @@
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createMenuTemplate} from './view/menu.js';
-import {createFiltersTemplate} from './view/filters.js';
+import FiltersView from './view/filters.js';
 import {createSortingTemplate} from './view/sorting.js';
 import {createDayListTemplate} from './view/day-list.js';
 import {createDayTemplate} from './view/day.js';
@@ -9,7 +9,7 @@ import {createEventEditTemplate} from './view/event-edit.js';
 // import {createPageMessageTemplate} from './view/page-message.js';
 // import {createStatisticTemplate} from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
-import {RenderPosition, renderTemplate} from './utils/render.js';
+import {RenderPosition, renderTemplate, renderElement} from './utils/render.js';
 
 const EVENT_COUNT = 20;
 
@@ -27,7 +27,7 @@ const pageContainerElement = bodyElement.querySelector(`.trip-events`);
 
 renderTemplate(headerMainElement, createTripInfoTemplate(events), RenderPosition.AFTER_BEGIN);
 renderTemplate(headerControlsElement, createMenuTemplate(), RenderPosition.AFTER_BEGIN);
-renderTemplate(headerControlsElement, createFiltersTemplate());
+renderElement(headerControlsElement, new FiltersView().getElement());
 
 renderTemplate(pageContainerElement, createSortingTemplate());
 renderTemplate(pageContainerElement, createEventEditTemplate(events[0]));
