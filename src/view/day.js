@@ -1,15 +1,22 @@
-export const createDayTemplate = () => {
+import {getDateWithDash} from '../utils.js';
+
+export const createDayTemplate = (date, i) => {
+  const dateElement = new Date(date);
+
+  const datetime = getDateWithDash(dateElement);
+  const formatDate = date.toUpperCase().slice(4, 10);
+
   return (
-    `<li class="trip-days__item  day">
+    `<li class="trip-days__item day">
       <div class="day__info">
-        <span class="day__counter">1</span>
+        <span class="day__counter">${i + 1}</span>
         <time
           class="day__date"
-          datetime="2019-03-18"
-        >MAR 18</time>
+          datetime="${datetime}"
+        >${formatDate}</time>
       </div>
 
-      <ul class="trip-events__list"></ul>
+      <ul class="trip-events__list trip-events__list-${i}"></ul>
     </li>`
   );
 };

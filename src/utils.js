@@ -28,7 +28,7 @@ export const getDateWithDash = (date) => { // 2020-08-16
   return `${date.getFullYear()}-${addNumberWithZero(mounth)}-${addNumberWithZero(day)}`;
 };
 
-export const getDateWithSlash = (date) => { // 16/08/2020
+export const getDateWithSlash = (date) => { // 16/08/20
   const day = addNumberWithZero(date.getDate());
   const mounth = addNumberWithZero(date.getMonth() + 1);
   const year = String(date.getFullYear()).slice(2);
