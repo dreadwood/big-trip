@@ -9,7 +9,7 @@ import EventEditView from './view/event-edit.js';
 // import PageMessageView from './view/page-message.js';
 // import StatisticView from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
-import {RenderPosition, renderTemplate, renderElement} from './utils/render.js';
+import {RenderPosition, render} from './utils/render.js';
 
 const EVENT_COUNT = 20;
 
@@ -25,21 +25,21 @@ const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const pageContainerElement = bodyElement.querySelector(`.trip-events`);
 
-renderElement(headerMainElement, new TripInfoView(events).getElement(events), RenderPosition.AFTER_BEGIN);
-renderElement(headerControlsElement, new MenuView().getElement(), RenderPosition.AFTER_BEGIN);
-renderElement(headerControlsElement, new FiltersView().getElement());
+render(headerMainElement, new TripInfoView(events).getElement(events), RenderPosition.AFTER_BEGIN);
+render(headerControlsElement, new MenuView().getElement(), RenderPosition.AFTER_BEGIN);
+render(headerControlsElement, new FiltersView().getElement());
 
-renderElement(pageContainerElement, new SortingView().getElement());
-renderElement(pageContainerElement, new EventEditView(events[0]).getElement());
-renderElement(pageContainerElement, new DayListView().getElement());
+render(pageContainerElement, new SortingView().getElement());
+render(pageContainerElement, new EventEditView(events[0]).getElement());
+render(pageContainerElement, new DayListView().getElement());
 
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
 
 datesEvents.forEach((date, i) => {
-  renderElement(dayListElement, new DayView(date, i).getElement());
+  render(dayListElement, new DayView(date, i).getElement());
   const eventListElement = dayListElement.querySelector(`.trip-events__list-${i}`);
 
   events
     .filter((event) => event.startDate.toDateString() === date)
-    .forEach((event) => renderElement(eventListElement, new EventView(event).getElement()));
+    .forEach((event) => render(eventListElement, new EventView(event).getElement()));
 });
