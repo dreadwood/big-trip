@@ -1,4 +1,5 @@
 import {capitalizeStr} from '../utils/common.js';
+import {createElement} from '../utils/render.js';
 
 const SORTING_TYPES = [
   `event`,
@@ -6,7 +7,7 @@ const SORTING_TYPES = [
   `price`,
 ];
 
-export const createSortingTemplate = (selectedSort = `event`) => {
+const createSortingTemplate = (selectedSort) => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day">Day</span>
@@ -33,3 +34,26 @@ export const createSortingTemplate = (selectedSort = `event`) => {
     </form>`
   );
 };
+
+export default class SortingView {
+  constructor(selectedSort = `event`) {
+    this._element = null;
+    this._selectedSort = selectedSort;
+  }
+
+  getTemplate() {
+    return createSortingTemplate(this._selectedSort);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

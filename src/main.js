@@ -1,7 +1,7 @@
 import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import FiltersView from './view/filters.js';
-import {createSortingTemplate} from './view/sorting.js';
+import SortingView from './view/sorting.js';
 import {createDayListTemplate} from './view/day-list.js';
 import {createDayTemplate} from './view/day.js';
 import {createEventTemplate} from './view/event.js';
@@ -29,7 +29,7 @@ renderElement(headerMainElement, new TripInfoView(events).getElement(events), Re
 renderElement(headerControlsElement, new MenuView().getElement(), RenderPosition.AFTER_BEGIN);
 renderElement(headerControlsElement, new FiltersView().getElement());
 
-renderTemplate(pageContainerElement, createSortingTemplate());
+renderElement(pageContainerElement, new SortingView().getElement());
 renderTemplate(pageContainerElement, createEventEditTemplate(events[0]));
 renderTemplate(pageContainerElement, createDayListTemplate());
 
