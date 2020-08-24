@@ -1,4 +1,4 @@
-import {capitalizeStr} from '../utils.js';
+import {capitalizeStr} from '../utils/common.js';
 
 const SORTING_TYPES = [
   `event`,

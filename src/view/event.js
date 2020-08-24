@@ -1,5 +1,5 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
-import {getTime, getDateWithDash} from '../utils.js';
+import {getTime, getDateWithDash} from '../utils/common.js';
 
 const getDuration = (durationInMs) => { // 1H 25M
   const durationInMin = durationInMs / (60 * 1000);

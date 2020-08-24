@@ -9,17 +9,9 @@ import {createEventEditTemplate} from './view/event-edit.js';
 // import {createPageMessageTemplate} from './view/page-message.js';
 // import {createStatisticTemplate} from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
+import {RenderPosition, renderTemplate} from './utils/render.js';
 
 const EVENT_COUNT = 20;
-
-const RenderPosition = {
-  AFTER_BEGIN: `afterbegin`,
-  BEFOR_END: `beforeend`,
-};
-
-const render = (container, template, place = RenderPosition.BEFOR_END) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const events = new Array(EVENT_COUNT).fill(``)
   .map(generateTripEvent)
@@ -33,21 +25,21 @@ const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const pageContainerElement = bodyElement.querySelector(`.trip-events`);
 
-render(headerMainElement, createTripInfoTemplate(events), RenderPosition.AFTER_BEGIN);
-render(headerControlsElement, createMenuTemplate(), RenderPosition.AFTER_BEGIN);
-render(headerControlsElement, createFiltersTemplate());
+renderTemplate(headerMainElement, createTripInfoTemplate(events), RenderPosition.AFTER_BEGIN);
+renderTemplate(headerControlsElement, createMenuTemplate(), RenderPosition.AFTER_BEGIN);
+renderTemplate(headerControlsElement, createFiltersTemplate());
 
-render(pageContainerElement, createSortingTemplate());
-render(pageContainerElement, createEventEditTemplate(events[0]));
-render(pageContainerElement, createDayListTemplate());
+renderTemplate(pageContainerElement, createSortingTemplate());
+renderTemplate(pageContainerElement, createEventEditTemplate(events[0]));
+renderTemplate(pageContainerElement, createDayListTemplate());
 
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
 
 datesEvents.forEach((date, i) => {
-  render(dayListElement, createDayTemplate(date, i));
+  renderTemplate(dayListElement, createDayTemplate(date, i));
   const eventListElement = dayListElement.querySelector(`.trip-events__list-${i}`);
 
   events
     .filter((event) => event.startDate.toDateString() === date)
-    .forEach((event) => render(eventListElement, createEventTemplate(event)));
+    .forEach((event) => renderTemplate(eventListElement, createEventTemplate(event)));
 });

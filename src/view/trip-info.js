@@ -1,4 +1,4 @@
-import {getShortDate} from '../utils.js';
+import {getShortDate} from '../utils/common.js';
 
 const createRouteTemplate = (events, cityQuantity) => {
   const firstCity = events[0].destination.city;

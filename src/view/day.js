@@ -1,4 +1,4 @@
-import {getDateWithDash} from '../utils.js';
+import {getDateWithDash} from '../utils/common.js';
 
 export const createDayTemplate = (date, i) => {
   const dateElement = new Date(date);

@@ -1,7 +1,7 @@
 import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES} from '../mock/destinations.js';
-import {getTime, getDateWithSlash, capitalizeStr} from '../utils.js';
+import {getTime, getDateWithSlash, capitalizeStr} from '../utils/common.js';
 
 const BLANK_EVENT = {
   id: null,
