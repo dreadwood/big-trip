@@ -3,7 +3,7 @@ import MenuView from './view/menu.js';
 import FiltersView from './view/filters.js';
 import SortingView from './view/sorting.js';
 import {createDayListTemplate} from './view/day-list.js';
-import {createDayTemplate} from './view/day.js';
+import DayView from './view/day.js';
 import {createEventTemplate} from './view/event.js';
 import {createEventEditTemplate} from './view/event-edit.js';
 // import {createPageMessageTemplate} from './view/page-message.js';
@@ -36,7 +36,7 @@ renderTemplate(pageContainerElement, createDayListTemplate());
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
 
 datesEvents.forEach((date, i) => {
-  renderTemplate(dayListElement, createDayTemplate(date, i));
+  renderElement(dayListElement, new DayView(date, i).getElement());
   const eventListElement = dayListElement.querySelector(`.trip-events__list-${i}`);
 
   events
