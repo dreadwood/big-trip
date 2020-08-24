@@ -5,7 +5,7 @@ const TABS = [
   `Stats`
 ];
 
-export const createMenuTemplate = (selectedFilter) => {
+const createMenuTemplate = (selectedFilter) => {
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
       ${TABS.map((item) => `<a

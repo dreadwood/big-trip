@@ -1,10 +1,12 @@
+import {createElement} from '../utils/render.js';
+
 const STATISTICS_TYPE = [
   `money`,
   `transport`,
   `time`,
 ];
 
-export const createStatisticTemplate = () => {
+const createStatisticTemplate = () => {
   // Markup has element div with "statistics__item--time-spend" class
   return (
     `<section class="statistics">
@@ -15,3 +17,25 @@ export const createStatisticTemplate = () => {
     </section>`
   );
 };
+
+export default class StatisticView {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

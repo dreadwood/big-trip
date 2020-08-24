@@ -2,12 +2,12 @@ import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import FiltersView from './view/filters.js';
 import SortingView from './view/sorting.js';
-import {createDayListTemplate} from './view/day-list.js';
+import DayListView from './view/day-list.js';
 import DayView from './view/day.js';
 import {createEventTemplate} from './view/event.js';
 import {createEventEditTemplate} from './view/event-edit.js';
-// import {createPageMessageTemplate} from './view/page-message.js';
-// import {createStatisticTemplate} from './view/statistic.js';
+// import PageMessageView from './view/page-message.js';
+// import StatisticView from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
 import {RenderPosition, renderTemplate, renderElement} from './utils/render.js';
 
@@ -31,7 +31,7 @@ renderElement(headerControlsElement, new FiltersView().getElement());
 
 renderElement(pageContainerElement, new SortingView().getElement());
 renderTemplate(pageContainerElement, createEventEditTemplate(events[0]));
-renderTemplate(pageContainerElement, createDayListTemplate());
+renderElement(pageContainerElement, new DayListView().getElement());
 
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
 
