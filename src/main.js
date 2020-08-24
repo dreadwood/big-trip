@@ -4,7 +4,7 @@ import FiltersView from './view/filters.js';
 import SortingView from './view/sorting.js';
 import DayListView from './view/day-list.js';
 import DayView from './view/day.js';
-import {createEventTemplate} from './view/event.js';
+import EventView from './view/event.js';
 import {createEventEditTemplate} from './view/event-edit.js';
 // import PageMessageView from './view/page-message.js';
 // import StatisticView from './view/statistic.js';
@@ -41,5 +41,5 @@ datesEvents.forEach((date, i) => {
 
   events
     .filter((event) => event.startDate.toDateString() === date)
-    .forEach((event) => renderTemplate(eventListElement, createEventTemplate(event)));
+    .forEach((event) => renderElement(eventListElement, new EventView(event).getElement()));
 });

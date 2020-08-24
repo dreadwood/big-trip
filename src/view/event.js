@@ -1,5 +1,6 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
 import {getTime, getDateWithDash} from '../utils/common.js';
+import {createElement} from '../utils/render.js';
 
 const getDuration = (durationInMs) => { // 1H 25M
   const durationInMin = durationInMs / (60 * 1000);
@@ -21,7 +22,7 @@ const createOffersTemplate = (offers) => {
   );
 };
 
-export const createEventTemplate = (event) => {
+const createEventTemplate = (event) => {
   const {
     type,
     selectedOffers,
@@ -72,3 +73,26 @@ export const createEventTemplate = (event) => {
     </li>`
   );
 };
+
+export default class EventView {
+  constructor(event) {
+    this._element = null;
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
