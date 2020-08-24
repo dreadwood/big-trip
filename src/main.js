@@ -5,7 +5,7 @@ import SortingView from './view/sorting.js';
 import DayListView from './view/day-list.js';
 import DayView from './view/day.js';
 import EventView from './view/event.js';
-import {createEventEditTemplate} from './view/event-edit.js';
+import EventEditView from './view/event-edit.js';
 // import PageMessageView from './view/page-message.js';
 // import StatisticView from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
@@ -30,7 +30,7 @@ renderElement(headerControlsElement, new MenuView().getElement(), RenderPosition
 renderElement(headerControlsElement, new FiltersView().getElement());
 
 renderElement(pageContainerElement, new SortingView().getElement());
-renderTemplate(pageContainerElement, createEventEditTemplate(events[0]));
+renderElement(pageContainerElement, new EventEditView(events[0]).getElement());
 renderElement(pageContainerElement, new DayListView().getElement());
 
 const dayListElement = pageContainerElement.querySelector(`.trip-days`);
