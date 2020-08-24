@@ -1,4 +1,4 @@
-import {createTripInfoTemplate} from './view/trip-info.js';
+import TripInfoView from './view/trip-info.js';
 import {createMenuTemplate} from './view/menu.js';
 import FiltersView from './view/filters.js';
 import {createSortingTemplate} from './view/sorting.js';
@@ -25,7 +25,7 @@ const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const pageContainerElement = bodyElement.querySelector(`.trip-events`);
 
-renderTemplate(headerMainElement, createTripInfoTemplate(events), RenderPosition.AFTER_BEGIN);
+renderElement(headerMainElement, new TripInfoView().getElement(events), RenderPosition.AFTER_BEGIN);
 renderTemplate(headerControlsElement, createMenuTemplate(), RenderPosition.AFTER_BEGIN);
 renderElement(headerControlsElement, new FiltersView().getElement());
 
