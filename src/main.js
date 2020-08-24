@@ -73,16 +73,17 @@ if (events.length === 0) {
   render(pageContainerElement, new PageMessageView().getElement());
 } else {
   render(pageContainerElement, new SortingView().getElement());
-  render(pageContainerElement, new DayListView().getElement());
-
-  const dayListElement = pageContainerElement.querySelector(`.trip-days`);
+  const dayListComponent = new DayListView();
+  render(pageContainerElement, dayListComponent.getElement());
 
   datesEvents.forEach((date, i) => {
-    render(dayListElement, new DayView(date, i).getElement());
-    const eventListElement = dayListElement.querySelector(`.trip-events__list-${i}`);
+    const dayComponent = new DayView(date, i);
+    const eventListElement = dayComponent.getElement().querySelector(`.trip-events__list`);
 
     events
       .filter((event) => event.startDate.toDateString() === date)
       .forEach((event) => renderEvent(eventListElement, event));
+
+    render(dayListComponent.getElement(), dayComponent.getElement());
   });
 }
