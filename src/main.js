@@ -6,7 +6,7 @@ import DayListView from './view/day-list.js';
 import DayView from './view/day.js';
 import EventView from './view/event.js';
 import EventEditView from './view/event-edit.js';
-// import PageMessageView from './view/page-message.js';
+import PageMessageView from './view/page-message.js';
 // import StatisticView from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
 import {RenderPosition, render} from './utils/render.js';
@@ -69,16 +69,20 @@ render(headerMainElement, new TripInfoView(events).getElement(events), RenderPos
 render(headerControlsElement, new MenuView().getElement(), RenderPosition.AFTER_BEGIN);
 render(headerControlsElement, new FiltersView().getElement());
 
-render(pageContainerElement, new SortingView().getElement());
-render(pageContainerElement, new DayListView().getElement());
+if (events.length === 0) {
+  render(pageContainerElement, new PageMessageView().getElement());
+} else {
+  render(pageContainerElement, new SortingView().getElement());
+  render(pageContainerElement, new DayListView().getElement());
 
-const dayListElement = pageContainerElement.querySelector(`.trip-days`);
+  const dayListElement = pageContainerElement.querySelector(`.trip-days`);
 
-datesEvents.forEach((date, i) => {
-  render(dayListElement, new DayView(date, i).getElement());
-  const eventListElement = dayListElement.querySelector(`.trip-events__list-${i}`);
+  datesEvents.forEach((date, i) => {
+    render(dayListElement, new DayView(date, i).getElement());
+    const eventListElement = dayListElement.querySelector(`.trip-events__list-${i}`);
 
-  events
-    .filter((event) => event.startDate.toDateString() === date)
-    .forEach((event) => renderEvent(eventListElement, event));
-});
+    events
+      .filter((event) => event.startDate.toDateString() === date)
+      .forEach((event) => renderEvent(eventListElement, event));
+  });
+}
