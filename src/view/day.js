@@ -17,7 +17,7 @@ const createDayTemplate = (date, i) => {
         >${formatDate}</time>
       </div>
 
-      <ul class="trip-events__list trip-events__list-${i}"></ul>
+      <ul class="trip-events__list"></ul>
     </li>`
   );
 };
