@@ -1,4 +1,5 @@
-import {capitalizeStr} from '../utils.js';
+import {capitalizeStr} from '../utils/common.js';
+import {createElement} from '../utils/render.js';
 
 const FILTERS = [
   `everything`,
@@ -6,7 +7,7 @@ const FILTERS = [
   `past`,
 ];
 
-export const createFiltersTemplate = (selectedFilter = `everything`) => {
+const createFiltersTemplate = (selectedFilter = `everything`) => {
   return (
     `<form class="trip-filters" action="#" method="get">
       ${FILTERS.map((filter) => `<div class="trip-filters__filter">
@@ -28,3 +29,25 @@ export const createFiltersTemplate = (selectedFilter = `everything`) => {
     </form>`
   );
 };
+
+export default class FiltersView {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFiltersTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

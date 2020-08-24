@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayItems} from '../utils.js';
+import {getRandomInteger, getRandomArrayItems} from '../utils/common.js';
 import {TYPES_OF_OFFERS} from './offers.js';
 import {CITIES, destinations} from './destinations.js';
 

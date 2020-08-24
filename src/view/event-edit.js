@@ -1,7 +1,8 @@
 import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES} from '../mock/destinations.js';
-import {getTime, getDateWithSlash, capitalizeStr} from '../utils.js';
+import {getTime, getDateWithSlash, capitalizeStr} from '../utils/common.js';
+import {createElement} from '../utils/render.js';
 
 const BLANK_EVENT = {
   id: null,
@@ -219,7 +220,7 @@ const createDestinationSectionTemplate = ({photos, description}) => {
   );
 };
 
-export const createEventEditTemplate = (event = BLANK_EVENT) => {
+const createEventEditTemplate = (event) => {
   const {
     id,
     type,
@@ -257,3 +258,26 @@ export const createEventEditTemplate = (event = BLANK_EVENT) => {
     </form>`
   );
 };
+
+export default class EventEditView {
+  constructor(event = BLANK_EVENT) {
+    this._element = null;
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

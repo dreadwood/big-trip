@@ -1,4 +1,5 @@
-import {getShortDate} from '../utils.js';
+import {getShortDate} from '../utils/common.js';
+import {createElement} from '../utils/render.js';
 
 const createRouteTemplate = (events, cityQuantity) => {
   const firstCity = events[0].destination.city;
@@ -33,7 +34,7 @@ const createDatesTemplate = (events) => {
   );
 };
 
-export const createTripInfoTemplate = (events = []) => {
+const createTripInfoTemplate = (events) => {
   const cityQuantity = events.length;
 
   const routeTemplate = cityQuantity ? createRouteTemplate(events, cityQuantity) : ``;
@@ -41,7 +42,7 @@ export const createTripInfoTemplate = (events = []) => {
   const fullCost = cityQuantity ? events.reduce((acc, event) => (acc + event.cost), 0) : 0;
 
   return (
-    `<section class="trip-main__trip-info  trip-info">
+    `<section class="trip-main__trip-info trip-info">
       <div class="trip-info__main">
         ${routeTemplate}
         ${datesTemplate}
@@ -53,3 +54,26 @@ export const createTripInfoTemplate = (events = []) => {
     </section>`
   );
 };
+
+export default class TripInfoView {
+  constructor(events = []) {
+    this._element = null;
+    this._events = events;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

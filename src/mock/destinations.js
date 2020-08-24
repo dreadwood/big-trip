@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayItems} from '../utils.js';
+import {getRandomInteger, getRandomArrayItems} from '../utils/common.js';
 
 const SentencesDescription = {
   MIN: 1,
