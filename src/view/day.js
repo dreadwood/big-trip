@@ -1,5 +1,5 @@
 import {getDateWithDash} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const createDayTemplate = (date, i) => {
   const dateElement = new Date(date);
@@ -22,26 +22,15 @@ const createDayTemplate = (date, i) => {
   );
 };
 
-export default class DayView {
+export default class DayView extends AbstractView {
   constructor(date, index) {
-    this._element = null;
+    super();
+
     this._date = date;
     this._index = index;
   }
 
   getTemplate() {
     return createDayTemplate(this._date, this._index);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

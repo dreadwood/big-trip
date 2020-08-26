@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const TABS = [
   `Table`,
@@ -16,25 +16,14 @@ const createMenuTemplate = (selectedFilter) => {
   );
 };
 
-export default class MenuView {
+export default class MenuView extends AbstractView {
   constructor(selectedFilter = `Table`) {
-    this._element = null;
+    super();
+
     this._selectedFilter = selectedFilter;
   }
 
   getTemplate() {
     return createMenuTemplate(this._selectedFilter);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,6 +1,6 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
 import {getTime, getDateWithDash} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const getDuration = (durationInMs) => { // 1H 25M
   const durationInMin = durationInMs / (60 * 1000);
@@ -74,25 +74,14 @@ const createEventTemplate = (event) => {
   );
 };
 
-export default class EventView {
+export default class EventView extends AbstractView {
   constructor(event) {
-    this._element = null;
+    super();
+
     this._event = event;
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -2,7 +2,7 @@ import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.j
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES} from '../mock/destinations.js';
 import {getTime, getDateWithSlash, capitalizeStr} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const BLANK_EVENT = {
   id: null,
@@ -259,25 +259,14 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
   constructor(event = BLANK_EVENT) {
-    this._element = null;
+    super();
+
     this._event = event;
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

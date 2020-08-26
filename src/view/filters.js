@@ -1,5 +1,5 @@
 import {capitalizeStr} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const FILTERS = [
   `everything`,
@@ -30,24 +30,8 @@ const createFiltersTemplate = (selectedFilter = `everything`) => {
   );
 };
 
-export default class FiltersView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FiltersView extends AbstractView {
   getTemplate() {
     return createFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
