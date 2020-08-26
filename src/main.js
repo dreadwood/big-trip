@@ -9,7 +9,7 @@ import EventEditView from './view/event-edit.js';
 import PageMessageView from './view/page-message.js';
 // import StatisticView from './view/statistic.js';
 import {generateTripEvent} from './mock/trip-event.js';
-import {RenderPosition, render} from './utils/render.js';
+import {RenderPosition, render, replace} from './utils/render.js';
 
 const EVENT_COUNT = 20;
 
@@ -25,11 +25,11 @@ const renderEvent = (container, event) => {
   const eventEditComponent = new EventEditView(event);
 
   const replaceCardToForm = () => {
-    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
 
   const replaceFormToCard = () => {
-    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -55,7 +55,7 @@ const renderEvent = (container, event) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(container, eventComponent.getElement());
+  render(container, eventComponent);
 };
 
 const bodyElement = document.querySelector(`.page-body`);
@@ -63,16 +63,16 @@ const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const pageContainerElement = bodyElement.querySelector(`.trip-events`);
 
-render(headerMainElement, new TripInfoView(events).getElement(events), RenderPosition.AFTER_BEGIN);
-render(headerControlsElement, new MenuView().getElement(), RenderPosition.AFTER_BEGIN);
-render(headerControlsElement, new FiltersView().getElement());
+render(headerMainElement, new TripInfoView(events), RenderPosition.AFTER_BEGIN);
+render(headerControlsElement, new MenuView(), RenderPosition.AFTER_BEGIN);
+render(headerControlsElement, new FiltersView());
 
 if (events.length === 0) {
-  render(pageContainerElement, new PageMessageView().getElement());
+  render(pageContainerElement, new PageMessageView());
 } else {
-  render(pageContainerElement, new SortingView().getElement());
+  render(pageContainerElement, new SortingView());
   const dayListComponent = new DayListView();
-  render(pageContainerElement, dayListComponent.getElement());
+  render(pageContainerElement, dayListComponent);
 
   datesEvents.forEach((date, i) => {
     const dayComponent = new DayView(date, i);
@@ -82,6 +82,6 @@ if (events.length === 0) {
       .filter((event) => event.startDate.toDateString() === date)
       .forEach((event) => renderEvent(eventListElement, event));
 
-    render(dayListComponent.getElement(), dayComponent.getElement());
+    render(dayListComponent, dayComponent);
   });
 }

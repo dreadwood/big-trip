@@ -1,5 +1,5 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
-import {getTime, getDateWithDash} from '../utils/common.js';
+import {getTime, getDateWithDash} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
 const getDuration = (durationInMs) => { // 1H 25M

@@ -1,4 +1,4 @@
-import {getDateWithDash} from '../utils/common.js';
+import {getDateWithDash} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
 const createDayTemplate = (date, i) => {
