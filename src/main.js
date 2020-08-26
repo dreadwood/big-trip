@@ -40,19 +40,17 @@ const renderEvent = (container, event) => {
     }
   };
 
-  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  eventComponent.setArrowButtonClickHandler(() => {
     replaceCardToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
+  eventEditComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  eventEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
-    evt.preventDefault();
+  eventEditComponent.setArrowButtonClickHandler(() => {
     replaceFormToCard();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
