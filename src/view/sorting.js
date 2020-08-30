@@ -23,7 +23,7 @@ const createSortingTemplate = (selectedSort) => {
         >
         <label class="trip-sort__btn" for="sort-${item}">
           ${capitalizeStr(item)}
-          ${item !== `event` ? `<svg
+          ${item !== selectedSort ? `<svg
             class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
               <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"/>
             </svg>` : ``}
@@ -40,9 +40,24 @@ export default class SortingView extends AbstractView {
     super();
 
     this._selectedSort = selectedSort;
+    this._sortingTypeChangeHandler = this._sortingTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createSortingTemplate(this._selectedSort);
+  }
+
+  _sortingTypeChangeHandler(evt) {
+    if (evt.target.tagName !== `INPUT`) {
+      return;
+    }
+
+    evt.preventDefault();
+    this._callback.sortingTypeChange(evt.target.value);
+  }
+
+  setSortingTypeChangeHandler(callback) {
+    this._callback.sortingTypeChange = callback;
+    this.getElement().addEventListener(`change`, this._sortingTypeChangeHandler);
   }
 }
