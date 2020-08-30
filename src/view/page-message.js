@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const MESSAGE_NO_EVENT = `Click New Event to create your first point`;
 
@@ -8,24 +8,8 @@ const createPageMessageTemplate = () => {
   );
 };
 
-export default class PageMessageView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class PageMessageView extends AbstractView {
   getTemplate() {
     return createPageMessageTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

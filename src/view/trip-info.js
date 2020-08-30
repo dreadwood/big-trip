@@ -1,5 +1,5 @@
-import {getShortDate} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import {getShortDate} from '../utils/date.js';
+import AbstractView from "./abstract.js";
 
 const createRouteTemplate = (events, cityQuantity) => {
   const firstCity = events[0].destination.city;
@@ -55,25 +55,14 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export default class TripInfoView {
+export default class TripInfoView extends AbstractView {
   constructor(events = []) {
-    this._element = null;
+    super();
+
     this._events = events;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

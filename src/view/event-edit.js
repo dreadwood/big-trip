@@ -1,8 +1,9 @@
 import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES} from '../mock/destinations.js';
-import {getTime, getDateWithSlash, capitalizeStr} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import {capitalizeStr} from '../utils/common.js';
+import {getTime, getDateWithSlash} from '../utils/date.js';
+import AbstractView from "./abstract.js";
 
 const BLANK_EVENT = {
   id: null,
@@ -259,25 +260,36 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
   constructor(event = BLANK_EVENT) {
-    this._element = null;
+    super();
+
     this._event = event;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _arrowButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.arrowButtonClick();
+  }
+
+  setArrowButtonClickHandler(callback) {
+    this._callback.arrowButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
   }
 }

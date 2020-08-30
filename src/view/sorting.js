@@ -1,5 +1,5 @@
 import {capitalizeStr} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import AbstractView from "./abstract.js";
 
 const SORTING_TYPES = [
   `event`,
@@ -35,25 +35,14 @@ const createSortingTemplate = (selectedSort) => {
   );
 };
 
-export default class SortingView {
+export default class SortingView extends AbstractView {
   constructor(selectedSort = `event`) {
-    this._element = null;
+    super();
+
     this._selectedSort = selectedSort;
   }
 
   getTemplate() {
     return createSortingTemplate(this._selectedSort);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,6 +1,6 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
-import {getTime, getDateWithDash} from '../utils/common.js';
-import {createElement} from '../utils/render.js';
+import {getTime, getDateWithDash} from '../utils/date.js';
+import AbstractView from "./abstract.js";
 
 const getDuration = (durationInMs) => { // 1H 25M
   const durationInMin = durationInMs / (60 * 1000);
@@ -74,25 +74,25 @@ const createEventTemplate = (event) => {
   );
 };
 
-export default class EventView {
+export default class EventView extends AbstractView {
   constructor(event) {
-    this._element = null;
+    super();
+
     this._event = event;
+    this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _arrowButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.arrowButtonClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setArrowButtonClickHandler(callback) {
+    this._callback.arrowButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
   }
 }
