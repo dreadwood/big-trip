@@ -4,13 +4,15 @@ import DayView from '../view/day.js';
 import PageMessageView from '../view/page-message.js';
 import EventPresenter from './event.js';
 import {SortingTypes} from '../const.js';
-import {render} from '../utils/render.js';
+import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._currentSortingType = SortingTypes.EVENT;
+    this._eventPresenters = {};
+    this._dayComponents = [];
 
     this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
@@ -76,48 +78,14 @@ export default class TripPresenter {
     // рендер события
     const eventPresenter = new EventPresenter(dayСontainer);
     eventPresenter.init(event);
-
-    // const eventComponent = new EventView(event);
-    // const eventEditComponent = new EventEditView(event);
-
-    // const replaceCardToForm = () => {
-    //   replace(eventEditComponent, eventComponent);
-    // };
-
-    // const replaceFormToCard = () => {
-    //   replace(eventComponent, eventEditComponent);
-    // };
-
-    // const onEscKeyDown = (evt) => {
-    //   if (evt.key === `Escape` || evt.key === `Esc`) {
-    //     evt.preventDefault();
-    //     replaceFormToCard();
-    //     document.removeEventListener(`keydown`, onEscKeyDown);
-    //   }
-    // };
-
-    // eventComponent.setArrowButtonClickHandler(() => {
-    //   replaceCardToForm();
-    //   document.addEventListener(`keydown`, onEscKeyDown);
-    // });
-
-    // eventEditComponent.setFormSubmitHandler(() => {
-    //   replaceFormToCard();
-    //   document.removeEventListener(`keydown`, onEscKeyDown);
-    // });
-
-    // eventEditComponent.setArrowButtonClickHandler(() => {
-    //   replaceFormToCard();
-    //   document.removeEventListener(`keydown`, onEscKeyDown);
-    // });
-
-    // render(dayСontainer, eventComponent);
+    this._eventPresenters[event.id] = eventPresenter;
   }
 
   _renderDay(date, i) {
     // рендер одного дня
     const dayComponent = new DayView(date, i);
     const dayСontainer = dayComponent.getElement().querySelector(`.trip-events__list`);
+    this._dayComponents.push(dayComponent);
 
     if (this._currentSortingType === SortingTypes.EVENT) {
       this._events
@@ -154,6 +122,12 @@ export default class TripPresenter {
 
   _clearTripList() {
     // добавить удаление компонентов задач и дней
-    this._dayListComponent.getElement().innerHTML = ``;
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenters = {};
+
+    this._dayComponents.forEach((day) => remove(day));
+    this._dayComponents = [];
   }
 }
