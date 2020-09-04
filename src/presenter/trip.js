@@ -85,7 +85,7 @@ export default class TripPresenter {
 
   _renderEvent(dayСontainer, event) {
     // рендер события
-    const eventPresenter = new EventPresenter(dayСontainer);
+    const eventPresenter = new EventPresenter(dayСontainer, this._handleEventChange);
     eventPresenter.init(event);
     this._eventPresenters[event.id] = eventPresenter;
   }

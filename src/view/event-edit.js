@@ -267,6 +267,7 @@ export default class EventEditView extends AbstractView {
     this._event = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -275,7 +276,7 @@ export default class EventEditView extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._event);
   }
 
   setFormSubmitHandler(callback) {
@@ -291,5 +292,15 @@ export default class EventEditView extends AbstractView {
   setArrowButtonClickHandler(callback) {
     this._callback.arrowButtonClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
+  }
+
+  _favoritesClickHandler(evt) { // может изменять только при сохранении?
+    evt.preventDefault();
+    this._callback.favoritesClick();
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoritesClickHandler);
   }
 }

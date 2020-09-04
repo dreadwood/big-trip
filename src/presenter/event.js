@@ -3,8 +3,9 @@ import EventEditView from '../view/event-edit.js';
 import {render, replace, remove} from '../utils/render.js';
 
 export default class EventPresenter {
-  constructor(dayСontainer) {
+  constructor(dayСontainer, changeData) {
     this._dayСontainer = dayСontainer;
+    this._changeData = changeData;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
@@ -13,6 +14,7 @@ export default class EventPresenter {
     this._handleCardArrowButtonClick = this._handleCardArrowButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormArrowButtonClick = this._handleFormArrowButtonClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(event) {
@@ -27,17 +29,18 @@ export default class EventPresenter {
     this._eventComponent.setArrowButtonClickHandler(this._handleCardArrowButtonClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setArrowButtonClickHandler(this._handleFormArrowButtonClick);
+    this._eventEditComponent.setFavoritesClickHandler(this._handleFavoriteClick);
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
       render(this._dayСontainer, this._eventComponent);
       return;
     }
 
-    if (this._dayСontainer.getElement().contains(prevEventComponent.getElement())) {
+    if (this._dayСontainer.contains(prevEventComponent.getElement())) {
       replace(this._eventComponent, prevEventComponent);
     }
 
-    if (this._dayСontainer.getElement().contains(prevEventEditComponent.getElement())) {
+    if (this._dayСontainer.contains(prevEventEditComponent.getElement())) {
       replace(this._eventEditComponent, prevEventEditComponent);
     }
 
@@ -71,8 +74,21 @@ export default class EventPresenter {
     this._replaceCardToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._changeData(
+        Object.assign(
+            {},
+            this._event,
+            {
+              isFavorites: !this._event.isFavorites
+            }
+        )
+    );
+  }
+
+  _handleFormSubmit(event) {
     this._replaceFormToCard();
+    this._changeData(event);
   }
 
   _handleFormArrowButtonClick() {
