@@ -4,40 +4,70 @@ import DayView from '../view/day.js';
 import EventView from '../view/event.js';
 import EventEditView from '../view/event-edit.js';
 import PageMessageView from '../view/page-message.js';
+import {SortingTypes} from '../const.js';
 import {render, replace} from '../utils/render.js';
+
+const getDuration = (event) => event.endDate - event.startDate;
 
 export default class TripPresenter {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._currentSortingType = SortingTypes.EVENT;
 
     this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
+
+    this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
   }
 
   init(events) {
     // инициализация
-    this._events = events;
+    this._events = events.slice();
+    this._sourceEvents = events.slice();
 
     if (this._events.length === 0) {
       this._renderNoEvents();
     } else {
       this._renderSorting();
       this._renderDayList();
+      this._renderDays();
     }
   }
 
-  _sortEvents() {
+  _sortEvents(sortingType) {
     // сортирует задачи
+    switch (sortingType) {
+      case SortingTypes.TIME:
+        // сортировка по длительности
+        this._events.sort((a, b) => getDuration(b) - getDuration(a));
+        break;
+      case SortingTypes.PRICE:
+        // сортировка по цене
+        this._events.sort((a, b) => b.cost - a.cost);
+        break;
+      default:
+        this._events = this._sourceEvents.slice();
+    }
+
+    this._currentSortingType = sortingType;
+    this._renderDays();
   }
 
-  _handleSortTypeChange() {
+  _handleSortingTypeChange(sortingType) {
     // обработчик сортировки
+    if (this._currentSortingType === sortingType) {
+      return;
+    }
+
+    this._clearTripList();
+    this._sortEvents(sortingType);
   }
 
   _renderSorting() {
     // рендер панели сортировки
-    render(this._tripContainer, new SortingView());
+    render(this._tripContainer, this._sortingComponent);
     // установка обработчика сортировки
+    this._sortingComponent.setSortingTypeChangeHandler(this._handleSortingTypeChange);
   }
 
   _renderNewEvent() {
@@ -88,27 +118,41 @@ export default class TripPresenter {
     const dayComponent = new DayView(date, i);
     const dayСontainer = dayComponent.getElement().querySelector(`.trip-events__list`);
 
-    this._events
-      .filter((event) => event.startDate.toDateString() === date)
-      .forEach((event) => this._renderEvent(dayСontainer, event));
+    if (this._currentSortingType === SortingTypes.EVENT) {
+      this._events
+        .filter((event) => event.startDate.toDateString() === date)
+        .forEach((event) => this._renderEvent(dayСontainer, event));
+    } else {
+      this._events.forEach((event) => this._renderEvent(dayСontainer, event));
+    }
 
     render(this._dayListComponent, dayComponent);
   }
 
-  // разделить на дни / рендарить несколько дней
+  _renderDays() {
+    // рендер несколько дней
+    if (this._currentSortingType === SortingTypes.EVENT) {
+      const datesEvents = [...new Set(this._events
+        .map((event) => event.startDate.toDateString()))];
+
+      datesEvents.forEach((date, i) => this._renderDay(date, i));
+    } else {
+      this._renderDay();
+    }
+  }
 
   _renderDayList() {
     // рендер списка дней
     render(this._tripContainer, this._dayListComponent);
-
-    const datesEvents = [...new Set(this._events
-      .map((event) => event.startDate.toDateString()))];
-
-    datesEvents.forEach((date, i) => this._renderDay(date, i));
   }
 
   _renderNoEvents() {
     // рендер сообщение о отсутствии событий
     render(this._tripContainer, new PageMessageView());
+  }
+
+  _clearTripList() {
+    // добавить удаление компонентов задач и дней
+    this._dayListComponent.getElement().innerHTML = ``;
   }
 }
