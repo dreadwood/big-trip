@@ -1,14 +1,6 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
-import {getTime, getDateWithDash} from '../utils/date.js';
+import {getTime, getDateWithDash, getFormatDuration} from '../utils/date.js';
 import AbstractView from "./abstract.js";
-
-const getDuration = (durationInMs) => { // 1H 25M
-  const durationInMin = durationInMs / (60 * 1000);
-
-  return (durationInMin > 60)
-    ? `${Math.floor(durationInMin / 60)}H ${durationInMin % 60}M`
-    : `${durationInMin}M`;
-};
 
 const createOffersTemplate = (offers) => {
   return (
@@ -37,7 +29,7 @@ const createEventTemplate = (event) => {
   const endTime = getTime(endDate);
   const startFormatDate = getDateWithDash(startDate);
   const endFormatDate = getDateWithDash(endDate);
-  const duration = getDuration(endDate - startDate);
+  const duration = getFormatDuration(endDate - startDate);
 
   const offersTemplate = selectedOffers ? createOffersTemplate(selectedOffers) : ``;
 

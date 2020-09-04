@@ -5,8 +5,7 @@ import PageMessageView from '../view/page-message.js';
 import EventPresenter from './event.js';
 import {SortingTypes} from '../const.js';
 import {render} from '../utils/render.js';
-
-const getDuration = (event) => event.endDate - event.startDate;
+import {getDurationEvent} from '../utils/date.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
@@ -38,7 +37,7 @@ export default class TripPresenter {
     switch (sortingType) {
       case SortingTypes.TIME:
         // сортировка по длительности
-        this._events.sort((a, b) => getDuration(b) - getDuration(a));
+        this._events.sort((a, b) => getDurationEvent(b) - getDurationEvent(a));
         break;
       case SortingTypes.PRICE:
         // сортировка по цене

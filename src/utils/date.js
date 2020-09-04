@@ -26,3 +26,13 @@ export const getShortDate = (date) => { // 19 AUG
     .toLocaleString(`en-GB`, {day: `numeric`, month: `short`})
     .toUpperCase();
 };
+
+export const getFormatDuration = (durationInMs) => { // 1H 25M
+  const durationInMin = durationInMs / (60 * 1000);
+
+  return (durationInMin > 60)
+    ? `${Math.floor(durationInMin / 60)}H ${durationInMin % 60}M`
+    : `${durationInMin}M`;
+};
+
+export const getDurationEvent = (event) => event.endDate - event.startDate; // ms
