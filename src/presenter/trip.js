@@ -6,6 +6,7 @@ import EventPresenter from './event.js';
 import {SortingTypes} from '../const.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
+import {updateItem} from '../utils/common.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
@@ -17,6 +18,7 @@ export default class TripPresenter {
     this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
 
+    this._handleEventChange = this._handleEventChange.bind(this);
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
   }
 
@@ -32,6 +34,13 @@ export default class TripPresenter {
       this._renderDayList();
       this._renderDays();
     }
+  }
+
+  _handleEventChange(updatedEvent) {
+    // обновляет список задач
+    this._events = updateItem(this._events, updatedEvent);
+    this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
+    this._eventPresenters[updatedEvent.id].init(updatedEvent);
   }
 
   _sortEvents(sortingType) {
