@@ -1,11 +1,6 @@
 import {capitalizeStr} from '../utils/common.js';
+import {SortingTypes} from '../const.js';
 import AbstractView from "./abstract.js";
-
-const SortingTypes = {
-  EVENT: `sort-event`,
-  TIME: `sort-time`,
-  PRICE: `sort-price`,
-};
 
 const createInputTemplate = (selectedSort) => Object.entries(SortingTypes).map(([type, value]) => {
   const typeName = type.toLowerCase();
