@@ -1,11 +1,10 @@
 import SortingView from '../view/sorting.js';
 import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
-import EventView from '../view/event.js';
-import EventEditView from '../view/event-edit.js';
 import PageMessageView from '../view/page-message.js';
+import EventPresenter from './event.js';
 import {SortingTypes} from '../const.js';
-import {render, replace} from '../utils/render.js';
+import {render} from '../utils/render.js';
 
 const getDuration = (event) => event.endDate - event.startDate;
 
@@ -76,41 +75,44 @@ export default class TripPresenter {
 
   _renderEvent(dayСontainer, event) {
     // рендер события
-    const eventComponent = new EventView(event);
-    const eventEditComponent = new EventEditView(event);
+    const eventPresenter = new EventPresenter(dayСontainer);
+    eventPresenter.init(event);
 
-    const replaceCardToForm = () => {
-      replace(eventEditComponent, eventComponent);
-    };
+    // const eventComponent = new EventView(event);
+    // const eventEditComponent = new EventEditView(event);
 
-    const replaceFormToCard = () => {
-      replace(eventComponent, eventEditComponent);
-    };
+    // const replaceCardToForm = () => {
+    //   replace(eventEditComponent, eventComponent);
+    // };
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+    // const replaceFormToCard = () => {
+    //   replace(eventComponent, eventEditComponent);
+    // };
 
-    eventComponent.setArrowButtonClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
+    // const onEscKeyDown = (evt) => {
+    //   if (evt.key === `Escape` || evt.key === `Esc`) {
+    //     evt.preventDefault();
+    //     replaceFormToCard();
+    //     document.removeEventListener(`keydown`, onEscKeyDown);
+    //   }
+    // };
 
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
+    // eventComponent.setArrowButtonClickHandler(() => {
+    //   replaceCardToForm();
+    //   document.addEventListener(`keydown`, onEscKeyDown);
+    // });
 
-    eventEditComponent.setArrowButtonClickHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
+    // eventEditComponent.setFormSubmitHandler(() => {
+    //   replaceFormToCard();
+    //   document.removeEventListener(`keydown`, onEscKeyDown);
+    // });
 
-    render(dayСontainer, eventComponent);
+    // eventEditComponent.setArrowButtonClickHandler(() => {
+    //   replaceFormToCard();
+    //   document.removeEventListener(`keydown`, onEscKeyDown);
+    // });
+
+    // render(dayСontainer, eventComponent);
   }
 
   _renderDay(date, i) {
