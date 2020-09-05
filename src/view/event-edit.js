@@ -263,20 +263,20 @@ const createEventEditTemplate = (event) => {
 export default class EventEditView extends AbstractView {
   constructor(event = BLANK_EVENT) {
     super();
+    this._data = EventEditView.parseEventToData(event);
 
-    this._event = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EventEditView.parseDataToEvent(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -302,5 +302,34 @@ export default class EventEditView extends AbstractView {
   setFavoritesClickHandler(callback) {
     this._callback.favoritesClick = callback;
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoritesClickHandler);
+  }
+
+  static parseEventToData(event) {
+    return Object.assign(
+        {},
+        event,
+        {
+          isType: event.type,
+          isCity: event.destination.city,
+          isDescription: event.destination.description,
+          isPhotos: event.destination.photos,
+        }
+    );
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    data.type = data.isType;
+    data.destination.city = data.isCity;
+    data.destination.description = data.isDescription;
+    data.destination.photos = data.isPhotos;
+
+    delete data.isType;
+    delete data.isCity;
+    delete data.isDescription;
+    delete data.isPhotos;
+
+    return data;
   }
 }
