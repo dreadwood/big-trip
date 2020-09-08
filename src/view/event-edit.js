@@ -82,7 +82,6 @@ const createDestinationInputTemplate = (selectedType, city) => {
       <input
         class="event__input event__input--destination"
         id="event-destination"
-        type="text"
         name="event-destination"
         value="${city}"
         list="destination-list"
@@ -221,7 +220,7 @@ const createDestinationSectionTemplate = ({photos, description}) => {
   );
 };
 
-const createEventEditTemplate = (event) => {
+const createEventEditTemplate = (data) => {
   const {
     id,
     type,
@@ -231,9 +230,10 @@ const createEventEditTemplate = (event) => {
     isFavorites,
     destination,
     selectedOffers,
-  } = event;
+    selectedCity
+  } = data;
 
-  const city = destination ? destination.city : ``;
+  const city = selectedCity ? selectedCity : ``;
 
   const eventOffers = TYPES_OF_OFFERS.find((item) => item.type === type).offers;
   const offersCount = eventOffers.length;
@@ -268,6 +268,19 @@ export default class EventEditView extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._destinationClickHandler = this._destinationClickHandler.bind(this);
+
+    this.getElement()
+      .querySelector(`.event__type-list`)
+      .addEventListener(`click`, this._typeChangeHandler);
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, this._destinationChangeHandler);
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`click`, this._destinationClickHandler);
   }
 
   getTemplate() {
@@ -286,6 +299,7 @@ export default class EventEditView extends AbstractView {
     );
 
     this.updateElement();
+    console.log(this._data);
   }
 
   updateElement() {
@@ -297,6 +311,29 @@ export default class EventEditView extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
     prevElement = null;
+  }
+
+  _typeChangeHandler(evt) {
+    if (evt.target.tagName === `INPUT`) {
+      evt.preventDefault();
+      this.updateData({
+        type: evt.target.value,
+        selectedOffers: null,
+      });
+    }
+  }
+
+  _destinationClickHandler(evt) {
+    evt.preventDefault();
+    evt.target.value = ``;
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      selectedCity: evt.target.value,
+    });
   }
 
   _formSubmitHandler(evt) {
@@ -319,7 +356,7 @@ export default class EventEditView extends AbstractView {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
   }
 
-  _favoritesClickHandler(evt) { // может изменять только при сохранении?
+  _favoritesClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoritesClick();
   }
@@ -334,8 +371,8 @@ export default class EventEditView extends AbstractView {
         {},
         event,
         {
-          isType: event.type,
-          isCity: event.destination.city,
+          // isType: event.type,
+          selectedCity: event.destination.city,
           isDescription: event.destination.description,
           isPhotos: event.destination.photos,
         }
@@ -345,13 +382,13 @@ export default class EventEditView extends AbstractView {
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
 
-    data.type = data.isType;
-    data.destination.city = data.isCity;
+    // data.type = data.isType;
+    data.destination.city = data.selectedCity;
     data.destination.description = data.isDescription;
     data.destination.photos = data.isPhotos;
 
-    delete data.isType;
-    delete data.isCity;
+    // delete data.isType;
+    delete data.selectedCity;
     delete data.isDescription;
     delete data.isPhotos;
 
