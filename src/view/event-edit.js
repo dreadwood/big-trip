@@ -272,15 +272,7 @@ export default class EventEditView extends AbstractView {
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._destinationClickHandler = this._destinationClickHandler.bind(this);
 
-    this.getElement()
-      .querySelector(`.event__type-list`)
-      .addEventListener(`click`, this._typeChangeHandler);
-    this.getElement()
-      .querySelector(`.event__input--destination`)
-      .addEventListener(`change`, this._destinationChangeHandler);
-    this.getElement()
-      .querySelector(`.event__input--destination`)
-      .addEventListener(`click`, this._destinationClickHandler);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -311,6 +303,27 @@ export default class EventEditView extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
     prevElement = null;
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector(`.event__type-list`)
+      .addEventListener(`click`, this._typeChangeHandler);
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, this._destinationChangeHandler);
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`click`, this._destinationClickHandler);
   }
 
   _typeChangeHandler(evt) {
