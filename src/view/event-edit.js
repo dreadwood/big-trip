@@ -5,6 +5,11 @@ import {capitalizeStr} from '../utils/common.js';
 import {getTime, getDateWithSlash} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
+const getOffersByType = (offers, type) => { // перенести
+  const list = offers.find((item) => item.type === type);
+  return list.offers.length ? list.offers : null;
+};
+
 const BLANK_EVENT = {
   id: null,
   type: Object.keys(EVENT_TYPES)[1],
@@ -229,18 +234,16 @@ const createEventEditTemplate = (data) => {
     cost,
     isFavorites,
     destination,
-    selectedOffers,
-    selectedCity
+    offers,
+    selectedCity,
+    offersType
   } = data;
 
   const city = selectedCity ? selectedCity : ``;
 
-  const eventOffers = TYPES_OF_OFFERS.find((item) => item.type === type).offers;
-  const offersCount = eventOffers.length;
-
-  const eventDetailsTemplate = () => (offersCount || destination)
+  const eventDetailsTemplate = () => (offersType || destination)
     ? `<section class="event__details">
-      ${offersCount ? createOffersSectionTemplate(eventOffers, selectedOffers) : ``}
+      ${offersType ? createOffersSectionTemplate(offersType, offers) : ``}
       ${destination ? createDestinationSectionTemplate(destination) : ``}
     </section>`
     : ``;
@@ -271,6 +274,7 @@ export default class EventEditView extends AbstractView {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._destinationClickHandler = this._destinationClickHandler.bind(this);
+    this._offerListClickHandler = this._offerListClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -279,7 +283,7 @@ export default class EventEditView extends AbstractView {
     return createEventEditTemplate(this._data);
   }
 
-  updateData(update) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
@@ -290,8 +294,11 @@ export default class EventEditView extends AbstractView {
         update
     );
 
+    if (justDataUpdating) {
+      return;
+    }
+
     this.updateElement();
-    console.log(this._data);
   }
 
   updateElement() {
@@ -324,14 +331,21 @@ export default class EventEditView extends AbstractView {
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`click`, this._destinationClickHandler);
+
+    if (this._data.offersType) {
+      this.getElement()
+        .querySelector(`.event__available-offers`)
+        .addEventListener(`click`, this._offerListClickHandler);
+    }
   }
 
-  _typeChangeHandler(evt) {
+  _typeChangeHandler(evt) { // нужно ли сбрасывать offer при смене направления?
     if (evt.target.tagName === `INPUT`) {
       evt.preventDefault();
       this.updateData({
         type: evt.target.value,
-        selectedOffers: null,
+        offers: null,
+        offersType: getOffersByType(TYPES_OF_OFFERS, evt.target.value),
       });
     }
   }
@@ -347,6 +361,13 @@ export default class EventEditView extends AbstractView {
     this.updateData({
       selectedCity: evt.target.value,
     });
+  }
+
+  _offerListClickHandler(evt) {
+    if (evt.target.tagName === `INPUT`) {
+      evt.preventDefault();
+
+    }
   }
 
   _formSubmitHandler(evt) {
@@ -384,10 +405,10 @@ export default class EventEditView extends AbstractView {
         {},
         event,
         {
-          // isType: event.type,
           selectedCity: event.destination.city,
           isDescription: event.destination.description,
           isPhotos: event.destination.photos,
+          offersType: getOffersByType(TYPES_OF_OFFERS, event.type),
         }
     );
   }
@@ -395,15 +416,14 @@ export default class EventEditView extends AbstractView {
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
 
-    // data.type = data.isType;
     data.destination.city = data.selectedCity;
     data.destination.description = data.isDescription;
     data.destination.photos = data.isPhotos;
 
-    // delete data.isType;
     delete data.selectedCity;
     delete data.isDescription;
     delete data.isPhotos;
+    delete data.offersType;
 
     return data;
   }

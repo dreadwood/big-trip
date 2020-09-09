@@ -85,7 +85,7 @@ export const generateTripEvent = () => {
   const endDate = new Date(startDate.getTime() + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
 
   const isFavorites = getRandomInteger() ? true : false;
-  const selectedOffers = getRandomInteger() ? getRandomOffers(type) : null;
+  const offers = getRandomInteger() ? getRandomOffers(type) : null;
 
   const city = getRandomArrayItems(CITIES);
   const destination = destinations.find((item) => item.city === city);
@@ -93,7 +93,7 @@ export const generateTripEvent = () => {
   return {
     id,
     type,
-    selectedOffers,
+    offers,
     startDate,
     endDate,
     cost,

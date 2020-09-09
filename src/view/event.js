@@ -17,7 +17,7 @@ const createOffersTemplate = (offers) => {
 const createEventTemplate = (event) => {
   const {
     type,
-    selectedOffers,
+    offers,
     startDate,
     endDate,
     cost,
@@ -31,7 +31,7 @@ const createEventTemplate = (event) => {
   const endFormatDate = getDateWithDash(endDate);
   const duration = getFormatDuration(endDate - startDate);
 
-  const offersTemplate = selectedOffers ? createOffersTemplate(selectedOffers) : ``;
+  const offersTemplate = offers ? createOffersTemplate(offers) : ``;
 
   return (
     `<li class="trip-events__item">
