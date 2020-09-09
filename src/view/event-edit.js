@@ -173,18 +173,20 @@ const createButtonsTemplate = (id, isFavorites) => {
   );
 };
 
-const createOfferTemplate = ({type, description, price}, isChecked) => {
+const createOfferTemplate = ({title, price}, isChecked) => {
+  const name = title.toLowerCase().replace(/ /g, `-`);
+
   return (
     `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox visually-hidden"
-        id="event-offer-${type}"
+        id="event-offer-${name}"
         type="checkbox"
-        name="event-offer-${type}"
+        name="event-offer-${name}"
         ${isChecked ? `checked` : ``}
       >
-      <label class="event__offer-label" for="event-offer-${type}">
-        <span class="event__offer-title">${description}</span>
+      <label class="event__offer-label" for="event-offer-${name}">
+        <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
       </label>
@@ -194,7 +196,7 @@ const createOfferTemplate = ({type, description, price}, isChecked) => {
 
 const createOffersSectionTemplate = (eventOffers, selectedOffers) => {
   const selectedTypeOffers = selectedOffers
-    ? [...selectedOffers].map((offer) => offer.type)
+    ? selectedOffers.map((offer) => offer.title)
     : [];
 
   return (
@@ -203,7 +205,7 @@ const createOffersSectionTemplate = (eventOffers, selectedOffers) => {
 
       <div class="event__available-offers">
         ${eventOffers
-          .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.type)))
+          .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.title)))
           .join(`\n`)}
       </div>
     </section>`
@@ -365,7 +367,6 @@ export default class EventEditView extends AbstractView {
 
   _offerListClickHandler(evt) {
     if (evt.target.tagName === `INPUT`) {
-      evt.preventDefault();
 
     }
   }

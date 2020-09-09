@@ -72,7 +72,7 @@ const getRandomOffers = (typeEvent) => {
     offers.add(getRandomArrayItems(eventOffers));
   }
 
-  return offers;
+  return Array.from(offers);
 };
 
 export const generateTripEvent = () => {
