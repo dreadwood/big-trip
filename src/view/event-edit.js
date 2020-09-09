@@ -5,7 +5,7 @@ import {capitalizeStr} from '../utils/common.js';
 import {getTime, getDateWithSlash} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
-const getOffersByType = (offers, type) => { // перенести
+const getOffersByType = (offers, type) => {
   const list = offers.find((item) => item.type === type);
   return list.offers.length ? list.offers : null;
 };
@@ -18,7 +18,7 @@ const BLANK_EVENT = {
   cost: null,
   isFavorites: false,
   destination: null,
-  offers: null,
+  offers: [],
 };
 
 const createEventTypeTemplate = (eventType, isChecked = false) => {
@@ -182,7 +182,7 @@ const createOfferTemplate = ({title, price}, isChecked) => {
         class="event__offer-checkbox visually-hidden"
         id="event-offer-${name}"
         type="checkbox"
-        name="event-offer-${name}"
+        name="${name}"
         ${isChecked ? `checked` : ``}
       >
       <label class="event__offer-label" for="event-offer-${name}">
@@ -341,12 +341,12 @@ export default class EventEditView extends AbstractView {
     }
   }
 
-  _typeChangeHandler(evt) { // нужно ли сбрасывать offer при смене направления?
+  _typeChangeHandler(evt) {
     if (evt.target.tagName === `INPUT`) {
       evt.preventDefault();
       this.updateData({
         type: evt.target.value,
-        offers: null,
+        offers: [],
         offersType: getOffersByType(TYPES_OF_OFFERS, evt.target.value),
       });
     }
@@ -354,6 +354,7 @@ export default class EventEditView extends AbstractView {
 
   _destinationClickHandler(evt) {
     evt.preventDefault();
+
     evt.target.value = ``;
   }
 
@@ -367,7 +368,20 @@ export default class EventEditView extends AbstractView {
 
   _offerListClickHandler(evt) {
     if (evt.target.tagName === `INPUT`) {
+      const offerTitle = capitalizeStr(evt.target.name.replace(/-/g, ` `));
+      const selectedOffers = this._data.offers.slice();
+      const index = selectedOffers.findIndex((offer) => offer.title === offerTitle);
 
+      if (index === -1) {
+        selectedOffers.push(this._data.offersType
+          .find((offerType) => offerType.title === offerTitle));
+      } else {
+        selectedOffers.splice(index, 1);
+      }
+
+      this.updateData({
+        offers: selectedOffers,
+      }, true);
     }
   }
 

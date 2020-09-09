@@ -64,7 +64,7 @@ const getRandomOffers = (typeEvent) => {
   const offersCount = eventOffers.length;
 
   if (offersCount === 0) {
-    return null;
+    return [];
   }
 
   const offers = new Set();
@@ -85,7 +85,7 @@ export const generateTripEvent = () => {
   const endDate = new Date(startDate.getTime() + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
 
   const isFavorites = getRandomInteger() ? true : false;
-  const offers = getRandomInteger() ? getRandomOffers(type) : null;
+  const offers = getRandomInteger() ? getRandomOffers(type) : [];
 
   const city = getRandomArrayItems(CITIES);
   const destination = destinations.find((item) => item.city === city);

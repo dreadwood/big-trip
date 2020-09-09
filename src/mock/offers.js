@@ -3,7 +3,7 @@ export const TYPES_OF_OFFERS = [
     type: `taxi`,
     offers: [
       {
-        title: `Order Uber`,
+        title: `Order uber`,
         price: 20,
       },
     ],
