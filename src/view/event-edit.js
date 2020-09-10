@@ -4,6 +4,9 @@ import {CITIES, destinationsList} from '../mock/destinations.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getTime, getDateWithSlash} from '../utils/date.js';
 import SmartView from "./smart.js";
+import flatpickr from "flatpickr";
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const getOffersByType = (offers, type) => {
   const list = offers.find((item) => item.type === type);
