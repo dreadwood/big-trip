@@ -19,6 +19,7 @@ export default class TripPresenter {
     this._dayListComponent = new DayListView();
 
     this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
   }
 
@@ -34,6 +35,12 @@ export default class TripPresenter {
       this._renderDayList();
       this._renderDays();
     }
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleEventChange(updatedEvent) {
@@ -85,7 +92,7 @@ export default class TripPresenter {
 
   _renderEvent(dayСontainer, event) {
     // рендер события
-    const eventPresenter = new EventPresenter(dayСontainer, this._handleEventChange);
+    const eventPresenter = new EventPresenter(dayСontainer, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenters[event.id] = eventPresenter;
   }
