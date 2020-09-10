@@ -1,6 +1,6 @@
 import {getRandomInteger, getRandomArrayItems} from '../utils/common.js';
 import {TYPES_OF_OFFERS} from './offers.js';
-import {CITIES, destinations} from './destinations.js';
+import {CITIES, destinationsList} from './destinations.js';
 
 const MAX_PRICE = 1000;
 const MAX_TIME_EVENT = 180;
@@ -88,7 +88,7 @@ export const generateTripEvent = () => {
   const offers = getRandomInteger() ? getRandomOffers(type) : [];
 
   const city = getRandomArrayItems(CITIES);
-  const destination = destinations.find((item) => item.city === city);
+  const destination = destinationsList.find((item) => item.city === city);
 
   return {
     id,

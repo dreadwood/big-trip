@@ -1,6 +1,6 @@
 import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
-import {CITIES} from '../mock/destinations.js';
+import {CITIES, destinationsList} from '../mock/destinations.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getTime, getDateWithSlash} from '../utils/date.js';
 import AbstractView from "./abstract.js";
@@ -212,7 +212,7 @@ const createOffersSectionTemplate = (eventOffers, selectedOffers) => {
   );
 };
 
-const createDestinationSectionTemplate = ({photos, description}) => {
+const createDestinationSectionTemplate = ({description, photos}) => {
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -220,7 +220,9 @@ const createDestinationSectionTemplate = ({photos, description}) => {
 
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(`\n`)}
+          ${photos
+            .map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.alt}">`)
+            .join(`\n`)}
         </div>
       </div>
     </section>`
@@ -237,11 +239,10 @@ const createEventEditTemplate = (data) => {
     isFavorites,
     destination,
     offers,
-    selectedCity,
     offersType
   } = data;
 
-  const city = selectedCity ? selectedCity : ``;
+  const city = destination ? destination.city : ``;
 
   const eventDetailsTemplate = () => (offersType || destination)
     ? `<section class="event__details">
@@ -344,6 +345,7 @@ export default class EventEditView extends AbstractView {
   _typeChangeHandler(evt) {
     if (evt.target.tagName === `INPUT`) {
       evt.preventDefault();
+
       this.updateData({
         type: evt.target.value,
         offers: [],
@@ -362,7 +364,7 @@ export default class EventEditView extends AbstractView {
     evt.preventDefault();
 
     this.updateData({
-      selectedCity: evt.target.value,
+      destination: destinationsList.find((item) => item.city === evt.target.value),
     });
   }
 
@@ -402,7 +404,8 @@ export default class EventEditView extends AbstractView {
 
   setArrowButtonClickHandler(callback) {
     this._callback.arrowButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._arrowButtonClickHandler);
   }
 
   _favoritesClickHandler(evt) {
@@ -412,7 +415,8 @@ export default class EventEditView extends AbstractView {
 
   setFavoritesClickHandler(callback) {
     this._callback.favoritesClick = callback;
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoritesClickHandler);
+    this.getElement().querySelector(`.event__favorite-btn`)
+      .addEventListener(`click`, this._favoritesClickHandler);
   }
 
   static parseEventToData(event) {
@@ -420,9 +424,6 @@ export default class EventEditView extends AbstractView {
         {},
         event,
         {
-          selectedCity: event.destination.city,
-          isDescription: event.destination.description,
-          isPhotos: event.destination.photos,
           offersType: getOffersByType(TYPES_OF_OFFERS, event.type),
         }
     );
@@ -431,13 +432,6 @@ export default class EventEditView extends AbstractView {
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
 
-    data.destination.city = data.selectedCity;
-    data.destination.description = data.isDescription;
-    data.destination.photos = data.isPhotos;
-
-    delete data.selectedCity;
-    delete data.isDescription;
-    delete data.isPhotos;
     delete data.offersType;
 
     return data;
