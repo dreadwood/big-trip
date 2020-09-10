@@ -3,7 +3,7 @@ import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES, destinationsList} from '../mock/destinations.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getTime, getDateWithSlash} from '../utils/date.js';
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 
 const getOffersByType = (offers, type) => {
   const list = offers.find((item) => item.type === type);
@@ -266,7 +266,7 @@ const createEventEditTemplate = (data) => {
   );
 };
 
-export default class EventEditView extends AbstractView {
+export default class EventEditView extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
     this._data = EventEditView.parseEventToData(event);
@@ -284,37 +284,6 @@ export default class EventEditView extends AbstractView {
 
   getTemplate() {
     return createEventEditTemplate(this._data);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null;
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
