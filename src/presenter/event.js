@@ -66,6 +66,7 @@ export default class EventPresenter {
   _escKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
+      this._eventEditComponent.reset(this._event);
       this._replaceFormToCard();
     }
   }
@@ -92,6 +93,7 @@ export default class EventPresenter {
   }
 
   _handleFormArrowButtonClick() {
+    this._eventEditComponent.reset(this._event);
     this._replaceFormToCard();
   }
 }

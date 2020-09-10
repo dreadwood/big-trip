@@ -282,6 +282,12 @@ export default class EventEditView extends SmartView {
     this._setInnerHandlers();
   }
 
+  reset(task) {
+    this.updateData(
+        EventEditView.parseEventToData(task)
+    );
+  }
+
   getTemplate() {
     return createEventEditTemplate(this._data);
   }
