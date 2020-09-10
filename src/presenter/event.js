@@ -74,11 +74,11 @@ export default class EventPresenter {
     this._replaceCardToForm();
   }
 
-  _handleFavoriteClick() {
+  _handleFavoriteClick(event) {
     this._changeData(
         Object.assign(
             {},
-            this._event,
+            event,
             {
               isFavorites: !this._event.isFavorites
             }
