@@ -1,9 +1,14 @@
 import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
-import {CITIES} from '../mock/destinations.js';
+import {CITIES, destinationsList} from '../mock/destinations.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getTime, getDateWithSlash} from '../utils/date.js';
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
+
+const getOffersByType = (offers, type) => {
+  const list = offers.find((item) => item.type === type);
+  return list.offers.length ? list.offers : null;
+};
 
 const BLANK_EVENT = {
   id: null,
@@ -13,7 +18,7 @@ const BLANK_EVENT = {
   cost: null,
   isFavorites: false,
   destination: null,
-  offers: null,
+  offers: [],
 };
 
 const createEventTypeTemplate = (eventType, isChecked = false) => {
@@ -82,7 +87,6 @@ const createDestinationInputTemplate = (selectedType, city) => {
       <input
         class="event__input event__input--destination"
         id="event-destination"
-        type="text"
         name="event-destination"
         value="${city}"
         list="destination-list"
@@ -169,18 +173,20 @@ const createButtonsTemplate = (id, isFavorites) => {
   );
 };
 
-const createOfferTemplate = ({type, description, price}, isChecked) => {
+const createOfferTemplate = ({title, price}, isChecked) => {
+  const name = title.toLowerCase().replace(/ /g, `-`);
+
   return (
     `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox visually-hidden"
-        id="event-offer-${type}"
+        id="event-offer-${name}"
         type="checkbox"
-        name="event-offer-${type}"
+        name="${name}"
         ${isChecked ? `checked` : ``}
       >
-      <label class="event__offer-label" for="event-offer-${type}">
-        <span class="event__offer-title">${description}</span>
+      <label class="event__offer-label" for="event-offer-${name}">
+        <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
       </label>
@@ -190,7 +196,7 @@ const createOfferTemplate = ({type, description, price}, isChecked) => {
 
 const createOffersSectionTemplate = (eventOffers, selectedOffers) => {
   const selectedTypeOffers = selectedOffers
-    ? [...selectedOffers].map((offer) => offer.type)
+    ? selectedOffers.map((offer) => offer.title)
     : [];
 
   return (
@@ -199,14 +205,14 @@ const createOffersSectionTemplate = (eventOffers, selectedOffers) => {
 
       <div class="event__available-offers">
         ${eventOffers
-          .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.type)))
+          .map((offer) => createOfferTemplate(offer, selectedTypeOffers.includes(offer.title)))
           .join(`\n`)}
       </div>
     </section>`
   );
 };
 
-const createDestinationSectionTemplate = ({photos, description}) => {
+const createDestinationSectionTemplate = ({description, photos}) => {
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -214,14 +220,16 @@ const createDestinationSectionTemplate = ({photos, description}) => {
 
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(`\n`)}
+          ${photos
+            .map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.alt}">`)
+            .join(`\n`)}
         </div>
       </div>
     </section>`
   );
 };
 
-const createEventEditTemplate = (event) => {
+const createEventEditTemplate = (data) => {
   const {
     id,
     type,
@@ -230,17 +238,15 @@ const createEventEditTemplate = (event) => {
     cost,
     isFavorites,
     destination,
-    selectedOffers,
-  } = event;
+    offers,
+    offersType
+  } = data;
 
   const city = destination ? destination.city : ``;
 
-  const eventOffers = TYPES_OF_OFFERS.find((item) => item.type === type).offers;
-  const offersCount = eventOffers.length;
-
-  const eventDetailsTemplate = () => (offersCount || destination)
+  const eventDetailsTemplate = () => (offersType || destination)
     ? `<section class="event__details">
-      ${offersCount ? createOffersSectionTemplate(eventOffers, selectedOffers) : ``}
+      ${offersType ? createOffersSectionTemplate(offersType, offers) : ``}
       ${destination ? createDestinationSectionTemplate(destination) : ``}
     </section>`
     : ``;
@@ -260,22 +266,105 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEditView extends AbstractView {
+export default class EventEditView extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
+    this._data = EventEditView.parseEventToData(event);
 
-    this._event = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._destinationClickHandler = this._destinationClickHandler.bind(this);
+    this._offerListClickHandler = this._offerListClickHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(task) {
+    this.updateData(
+        EventEditView.parseEventToData(task)
+    );
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector(`.event__type-list`)
+      .addEventListener(`click`, this._typeChangeHandler);
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, this._destinationChangeHandler);
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`click`, this._destinationClickHandler);
+
+    if (this._data.offersType) {
+      this.getElement()
+        .querySelector(`.event__available-offers`)
+        .addEventListener(`click`, this._offerListClickHandler);
+    }
+  }
+
+  _typeChangeHandler(evt) {
+    if (evt.target.tagName === `INPUT`) {
+      evt.preventDefault();
+
+      this.updateData({
+        type: evt.target.value,
+        offers: [],
+        offersType: getOffersByType(TYPES_OF_OFFERS, evt.target.value),
+      });
+    }
+  }
+
+  _destinationClickHandler(evt) {
+    evt.preventDefault();
+
+    evt.target.value = ``;
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      destination: destinationsList.find((item) => item.city === evt.target.value),
+    });
+  }
+
+  _offerListClickHandler(evt) {
+    if (evt.target.tagName === `INPUT`) {
+      const offerTitle = capitalizeStr(evt.target.name.replace(/-/g, ` `));
+      const selectedOffers = this._data.offers.slice();
+      const index = selectedOffers.findIndex((offer) => offer.title === offerTitle);
+
+      if (index === -1) {
+        selectedOffers.push(this._data.offersType
+          .find((offerType) => offerType.title === offerTitle));
+      } else {
+        selectedOffers.splice(index, 1);
+      }
+
+      this.updateData({
+        offers: selectedOffers,
+      }, true);
+    }
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(EventEditView.parseDataToEvent(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -290,6 +379,36 @@ export default class EventEditView extends AbstractView {
 
   setArrowButtonClickHandler(callback) {
     this._callback.arrowButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._arrowButtonClickHandler);
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoritesClick(EventEditView.parseDataToEvent(this._data));
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`)
+      .addEventListener(`click`, this._favoritesClickHandler);
+  }
+
+  static parseEventToData(event) {
+    return Object.assign(
+        {},
+        event,
+        {
+          offersType: getOffersByType(TYPES_OF_OFFERS, event.type),
+        }
+    );
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    delete data.offersType;
+
+    return data;
   }
 }

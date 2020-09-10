@@ -41,7 +41,10 @@ export const generateDestination = (city) => {
     .fill(``).map(() => getRandomArrayItems(PARTS_OF_DESCRIPTION)).join(` `);
 
   const photos = new Array(getRandomInteger(PhotosDescription.MIN, PhotosDescription.MAX))
-    .fill(``).map(() => `http://picsum.photos/248/152?r=${Math.random()}`);
+    .fill(``).map(() => ({
+      src: `http://picsum.photos/248/152?r=${Math.random()}`,
+      alt: getRandomArrayItems(PARTS_OF_DESCRIPTION),
+    }));
 
   return {
     city,
@@ -50,4 +53,4 @@ export const generateDestination = (city) => {
   };
 };
 
-export const destinations = CITIES.map((city) => generateDestination(city));
+export const destinationsList = CITIES.map((city) => generateDestination(city));

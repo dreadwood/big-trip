@@ -3,15 +3,27 @@ export const TYPES_OF_OFFERS = [
     type: `taxi`,
     offers: [
       {
-        type: `uber`,
-        description: `Order Uber`,
+        title: `Order uber`,
         price: 20,
       },
     ],
   },
   {
     type: `bus`,
-    offers: []
+    offers: [
+      {
+        title: `Infotainment system`,
+        price: 50
+      },
+      {
+        title: `Order meal`,
+        price: 100
+      },
+      {
+        title: `Choose seats`,
+        price: 190
+      },
+    ],
   },
   {
     type: `train`,
@@ -29,8 +41,7 @@ export const TYPES_OF_OFFERS = [
     type: `drive`,
     offers: [
       {
-        type: `rent`,
-        description: `Rent a car`,
+        title: `Rent a car`,
         price: 200,
       },
     ],
@@ -39,28 +50,23 @@ export const TYPES_OF_OFFERS = [
     type: `flight`,
     offers: [
       {
-        type: `luggage`,
-        description: `Add luggage`,
+        title: `Add luggage`,
         price: 30,
       },
       {
-        type: `comfort`,
-        description: `Switch to comfort class`,
+        title: `Switch to comfort class`,
         price: 100,
       },
       {
-        type: `meal`,
-        description: `Add meal`,
+        title: `Add meal`,
         price: 15,
       },
       {
-        type: `seats`,
-        description: `Choose seats`,
+        title: `Choose seats`,
         price: 5,
       },
       {
-        type: `train`,
-        description: `Travel by train`,
+        title: `Travel by train`,
         price: 40,
       },
     ]
@@ -69,18 +75,15 @@ export const TYPES_OF_OFFERS = [
     type: `check-in`,
     offers: [
       {
-        type: `breakfast`,
-        description: `Add breakfast`,
+        title: `Add breakfast`,
         price: 50,
       },
       {
-        type: `ironing`,
-        description: `Ironing service`,
+        title: `Ironing service`,
         price: 15,
       },
       {
-        type: `spa`,
-        description: `Spa`,
+        title: `Spa`,
         price: 80,
       },
     ],
@@ -89,13 +92,11 @@ export const TYPES_OF_OFFERS = [
     type: `sightseeing`,
     offers: [
       {
-        type: `tickets`,
-        description: `Book tickets`,
+        title: `Book tickets`,
         price: 40,
       },
       {
-        type: `lunch`,
-        description: `Lunch in city`,
+        title: `Lunch in city`,
         price: 30,
       },
     ],

@@ -1,22 +1,25 @@
 import SortingView from '../view/sorting.js';
 import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
-import EventView from '../view/event.js';
-import EventEditView from '../view/event-edit.js';
 import PageMessageView from '../view/page-message.js';
+import EventPresenter from './event.js';
 import {SortingTypes} from '../const.js';
-import {render, replace} from '../utils/render.js';
-
-const getDuration = (event) => event.endDate - event.startDate;
+import {render, remove} from '../utils/render.js';
+import {getDurationEvent} from '../utils/date.js';
+import {updateItem} from '../utils/common.js';
 
 export default class TripPresenter {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._currentSortingType = SortingTypes.EVENT;
+    this._eventPresenters = {};
+    this._dayComponents = [];
 
     this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
 
+    this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
   }
 
@@ -34,12 +37,25 @@ export default class TripPresenter {
     }
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleEventChange(updatedEvent) {
+    // обновляет список задач
+    this._events = updateItem(this._events, updatedEvent);
+    this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
+    this._eventPresenters[updatedEvent.id].init(updatedEvent);
+  }
+
   _sortEvents(sortingType) {
     // сортирует задачи
     switch (sortingType) {
       case SortingTypes.TIME:
         // сортировка по длительности
-        this._events.sort((a, b) => getDuration(b) - getDuration(a));
+        this._events.sort((a, b) => getDurationEvent(b) - getDurationEvent(a));
         break;
       case SortingTypes.PRICE:
         // сортировка по цене
@@ -76,47 +92,16 @@ export default class TripPresenter {
 
   _renderEvent(dayСontainer, event) {
     // рендер события
-    const eventComponent = new EventView(event);
-    const eventEditComponent = new EventEditView(event);
-
-    const replaceCardToForm = () => {
-      replace(eventEditComponent, eventComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(eventComponent, eventEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    eventComponent.setArrowButtonClickHandler(() => {
-      replaceCardToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComponent.setArrowButtonClickHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(dayСontainer, eventComponent);
+    const eventPresenter = new EventPresenter(dayСontainer, this._handleEventChange, this._handleModeChange);
+    eventPresenter.init(event);
+    this._eventPresenters[event.id] = eventPresenter;
   }
 
   _renderDay(date, i) {
     // рендер одного дня
     const dayComponent = new DayView(date, i);
     const dayСontainer = dayComponent.getElement().querySelector(`.trip-events__list`);
+    this._dayComponents.push(dayComponent);
 
     if (this._currentSortingType === SortingTypes.EVENT) {
       this._events
@@ -153,6 +138,12 @@ export default class TripPresenter {
 
   _clearTripList() {
     // добавить удаление компонентов задач и дней
-    this._dayListComponent.getElement().innerHTML = ``;
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenters = {};
+
+    this._dayComponents.forEach((day) => remove(day));
+    this._dayComponents = [];
   }
 }
