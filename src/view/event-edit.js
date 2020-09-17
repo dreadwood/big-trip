@@ -2,7 +2,7 @@ import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.j
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES, destinationsList} from '../mock/destinations.js';
 import {capitalizeStr} from '../utils/common.js';
-import {getTime, getDateWithSlash} from '../utils/date.js';
+import {getFullDateWithSlash} from '../utils/date.js';
 import SmartView from "./smart.js";
 import flatpickr from "flatpickr";
 
@@ -117,7 +117,7 @@ const createDataInputTemplate = (startDate, endDate) => {
         id="event-start-time"
         type="text"
         name="event-start-time"
-        value="${getDateWithSlash(startDate)} ${getTime(startDate)}"
+        value="${getFullDateWithSlash(startDate)}"
       >
       &mdash;
       <label class="visually-hidden" for="event-end-time">
@@ -128,7 +128,7 @@ const createDataInputTemplate = (startDate, endDate) => {
         id="event-end-time"
         type="text"
         name="event-end-time"
-        value="${getDateWithSlash(endDate)} ${getTime(endDate)}"
+        value="${getFullDateWithSlash(endDate)}"
       >
     </div>`
   );

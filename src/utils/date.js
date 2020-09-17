@@ -1,30 +1,27 @@
-const addNumberWithZero = (number) => String(number).padStart(2, `0`);
+import moment from 'moment';
 
 export const getTime = (date) => { // 19:26
-  const minutes = date.getUTCMinutes();
-
-  return `${date.getHours()}:${addNumberWithZero(minutes)}`;
+  return moment(date).format(`HH:MM`);
 };
 
-export const getDateWithDash = (date) => { // 2020-08-16
-  const mounth = date.getMonth() + 1;
-  const day = date.getDate();
-
-  return `${date.getFullYear()}-${addNumberWithZero(mounth)}-${addNumberWithZero(day)}`;
+export const getDatetime = (date) => { // 2020-08-19
+  return moment(date).format(`YYYY-MM-DD`);
 };
 
-export const getDateWithSlash = (date) => { // 16/08/20
-  const day = addNumberWithZero(date.getDate());
-  const mounth = addNumberWithZero(date.getMonth() + 1);
-  const year = String(date.getFullYear()).slice(2);
+export const getFullDatetime = (date) => { // 2020-08-19T12:08
+  return moment(date).format(`YYYY-MM-DD[T]HH:MM`);
+};
 
-  return `${day}/${mounth}/${year}`;
+export const getFullDateWithSlash = (date) => { // 19/08/20 12:08
+  return moment(date).format(`DD/MM/YY HH:MM`);
 };
 
 export const getShortDate = (date) => { // 19 AUG
-  return date
-    .toLocaleString(`en-GB`, {day: `numeric`, month: `short`})
-    .toUpperCase();
+  return moment(date).format(`DD MMM`);
+};
+
+export const getShortDateInversion = (date) => { // AUG 19
+  return moment(date).format(`MMM DD`);
 };
 
 export const getFormatDuration = (durationInMs) => { // 1H 25M
@@ -35,4 +32,4 @@ export const getFormatDuration = (durationInMs) => { // 1H 25M
     : `${durationInMin}M`;
 };
 
-export const getDurationEvent = (event) => event.endDate - event.startDate; // ms
+export const getDurationEvent = (event) => event.endDate - event.startDate; // ms (number)

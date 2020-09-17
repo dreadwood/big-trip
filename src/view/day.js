@@ -1,11 +1,11 @@
-import {getDateWithDash} from '../utils/date.js';
+import {getDatetime, getShortDateInversion} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
 const createDayInfoTemplate = (date, i) => {
   const dateElement = new Date(date);
 
-  const datetime = getDateWithDash(dateElement);
-  const formatDate = date.toUpperCase().slice(4, 10);
+  const datetime = getDatetime(dateElement);
+  const formatDate = getShortDateInversion(date);
 
   return (
     `<span class="day__counter">${i + 1}</span>
