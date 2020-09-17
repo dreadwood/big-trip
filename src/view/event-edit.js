@@ -2,12 +2,15 @@ import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.j
 import {TYPES_OF_OFFERS} from '../mock/offers.js';
 import {CITIES, destinationsList} from '../mock/destinations.js';
 import {capitalizeStr} from '../utils/common.js';
-import {getTime, getDateWithSlash} from '../utils/date.js';
+import {getFullDateWithSlash} from '../utils/date.js';
 import SmartView from "./smart.js";
+import flatpickr from "flatpickr";
 
-const getOffersByType = (offers, type) => {
-  const list = offers.find((item) => item.type === type);
-  return list.offers.length ? list.offers : null;
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
+const DATE_INPUTS = {
+  START: `start`,
+  END: `end`,
 };
 
 const BLANK_EVENT = {
@@ -19,6 +22,11 @@ const BLANK_EVENT = {
   isFavorites: false,
   destination: null,
   offers: [],
+};
+
+const getOffersByType = (offers, type) => {
+  const list = offers.find((item) => item.type === type);
+  return list.offers.length ? list.offers : null;
 };
 
 const createEventTypeTemplate = (eventType, isChecked = false) => {
@@ -109,7 +117,7 @@ const createDataInputTemplate = (startDate, endDate) => {
         id="event-start-time"
         type="text"
         name="event-start-time"
-        value="${getDateWithSlash(startDate)} ${getTime(startDate)}"
+        value="${getFullDateWithSlash(startDate)}"
       >
       &mdash;
       <label class="visually-hidden" for="event-end-time">
@@ -120,7 +128,7 @@ const createDataInputTemplate = (startDate, endDate) => {
         id="event-end-time"
         type="text"
         name="event-end-time"
-        value="${getDateWithSlash(endDate)} ${getTime(endDate)}"
+        value="${getFullDateWithSlash(endDate)}"
       >
     </div>`
   );
@@ -270,6 +278,7 @@ export default class EventEditView extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
     this._data = EventEditView.parseEventToData(event);
+    this._datepickers = {};
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
@@ -277,9 +286,11 @@ export default class EventEditView extends SmartView {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._destinationClickHandler = this._destinationClickHandler.bind(this);
+    this._dateChangeHandler = this._dateChangeHandler1.bind(this);
     this._offerListClickHandler = this._offerListClickHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepickers();
   }
 
   reset(task) {
@@ -294,9 +305,41 @@ export default class EventEditView extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepickers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
     this.setFavoritesClickHandler(this._callback.favoritesClick);
+  }
+
+  _setDatepickers() {
+    this._destroyDateDatepickers();
+
+    Object.values(DATE_INPUTS).forEach((type) => {
+      this._datepickers[type] = flatpickr(
+          this.getElement().querySelector(`#event-${type}-time`),
+          {
+            dateFormat: `d/m/y H:i`,
+            enableTime: true,
+            defaultDate: type === DATE_INPUTS.START ? this._data.startDate : this._data.endDate,
+            maxDate: type === DATE_INPUTS.START ? this._data.endDate : null,
+            minDate: type === DATE_INPUTS.START ? null : this._data.startDate,
+            // eslint-disable-next-line camelcase
+            time_24hr: true,
+            onClose: (evt) => this._dateChangeHandler1(evt, type),
+          }
+      );
+    });
+  }
+
+  _destroyDateDatepickers() {
+    Object.values(this._datepickers).forEach((datepicker) => {
+      if (datepicker) {
+        datepicker.destroy();
+        datepicker = null;
+      }
+    });
+
+    this._datepickers = {};
   }
 
   _setInnerHandlers() {
@@ -360,6 +403,16 @@ export default class EventEditView extends SmartView {
         offers: selectedOffers,
       }, true);
     }
+  }
+
+  _dateChangeHandler1([userDate], type) {
+    const dateType = `${type}Date`;
+
+    this.updateData({
+      [dateType]: userDate,
+    }, true);
+
+    this._setDatepickers();
   }
 
   _formSubmitHandler(evt) {

@@ -1,38 +1,39 @@
-const addNumberWithZero = (number) => String(number).padStart(2, `0`);
+import moment from 'moment';
 
 export const getTime = (date) => { // 19:26
-  const minutes = date.getUTCMinutes();
-
-  return `${date.getHours()}:${addNumberWithZero(minutes)}`;
+  return moment(date).format(`HH:mm`);
 };
 
-export const getDateWithDash = (date) => { // 2020-08-16
-  const mounth = date.getMonth() + 1;
-  const day = date.getDate();
-
-  return `${date.getFullYear()}-${addNumberWithZero(mounth)}-${addNumberWithZero(day)}`;
+export const getDatetime = (date) => { // 2020-08-19
+  return moment(date).format(`YYYY-MM-DD`);
 };
 
-export const getDateWithSlash = (date) => { // 16/08/20
-  const day = addNumberWithZero(date.getDate());
-  const mounth = addNumberWithZero(date.getMonth() + 1);
-  const year = String(date.getFullYear()).slice(2);
+export const getFullDatetime = (date) => { // 2020-08-19T12:08
+  return moment(date).format(`YYYY-MM-DD[T]HH:mm`);
+};
 
-  return `${day}/${mounth}/${year}`;
+export const getFullDateWithSlash = (date) => { // 19/08/20 12:08
+  return moment(date).format(`DD/MM/YY HH:mm`);
 };
 
 export const getShortDate = (date) => { // 19 AUG
-  return date
-    .toLocaleString(`en-GB`, {day: `numeric`, month: `short`})
-    .toUpperCase();
+  return moment(date).format(`DD MMM`);
 };
 
-export const getFormatDuration = (durationInMs) => { // 1H 25M
-  const durationInMin = durationInMs / (60 * 1000);
-
-  return (durationInMin > 60)
-    ? `${Math.floor(durationInMin / 60)}H ${durationInMin % 60}M`
-    : `${durationInMin}M`;
+export const getShortDateInversion = (date) => { // AUG 19
+  return moment(date).format(`MMM DD`);
 };
 
-export const getDurationEvent = (event) => event.endDate - event.startDate; // ms
+export const getFormatDuration = (durationInMs) => { // 1D 1H 25M
+  const minutes = moment.duration(durationInMs, `ms`).minutes();
+  const hours = moment.duration(durationInMs, `ms`).hours();
+  const days = moment.duration(durationInMs, `ms`).days();
+
+  const d = days ? `${days}D` : ``;
+  const h = hours ? `${hours}H` : ``;
+  const m = minutes ? `${minutes}M` : ``;
+
+  return `${d} ${h} ${m}`;
+};
+
+export const getDurationEvent = (event) => event.endDate - event.startDate; // ms (number)

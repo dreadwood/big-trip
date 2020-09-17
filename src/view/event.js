@@ -1,15 +1,18 @@
 import {EVENT_TYPES} from '../mock/trip-event.js';
-import {getTime, getDateWithDash, getFormatDuration} from '../utils/date.js';
+import {getTime, getFormatDuration, getFullDatetime} from '../utils/date.js';
 import AbstractView from "./abstract.js";
+
+const MAX_VISIBLE_OFFERS = 3;
 
 const createOffersTemplate = (offers) => {
   return (
     `<ul class="event__selected-offers">
-      ${offers.map(({title, price}) => `<li class="event__offer">
-        <span class="event__offer-title">${title}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${price}</span>
-      </li>`).join(`\n`)}
+      ${offers.map(({title, price}, i) => i < MAX_VISIBLE_OFFERS
+      ? `<li class="event__offer">
+          <span class="event__offer-title">${title}</span> &plus;
+          &euro;&nbsp;<span class="event__offer-price">${price}</span>
+        </li>`
+      : ``).join(`\n`)}
     </ul>`
   );
 };
@@ -27,8 +30,8 @@ const createEventTemplate = (event) => {
   const city = destination.city;
   const startTime = getTime(startDate);
   const endTime = getTime(endDate);
-  const startFormatDate = getDateWithDash(startDate);
-  const endFormatDate = getDateWithDash(endDate);
+  const startDatetime = getFullDatetime(startDate);
+  const endDatetime = getFullDatetime(endDate);
   const duration = getFormatDuration(endDate - startDate);
 
   const offersTemplate = offers ? createOffersTemplate(offers) : ``;
@@ -43,9 +46,9 @@ const createEventTemplate = (event) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${startFormatDate}T${startTime}">${startTime}</time>
+            <time class="event__start-time" datetime="${startDatetime}">${startTime}</time>
             &mdash;
-            <time class="event__end-time" datetime="${endFormatDate}T${endTime}">${endTime}</time>
+            <time class="event__end-time" datetime="${endDatetime}">${endTime}</time>
           </p>
           <p class="event__duration">${duration}</p>
         </div>
