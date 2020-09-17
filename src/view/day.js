@@ -5,7 +5,7 @@ const createDayInfoTemplate = (date, i) => {
   const dateElement = new Date(date);
 
   const datetime = getDatetime(dateElement);
-  const formatDate = getShortDateInversion(date);
+  const formatDate = getShortDateInversion(dateElement);
 
   return (
     `<span class="day__counter">${i + 1}</span>
