@@ -2,14 +2,17 @@ import {EVENT_TYPES} from '../mock/trip-event.js';
 import {getTime, getFormatDuration, getFullDatetime} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
+const MAX_VISIBLE_OFFERS = 3;
+
 const createOffersTemplate = (offers) => {
   return (
     `<ul class="event__selected-offers">
-      ${offers.map(({title, price}) => `<li class="event__offer">
-        <span class="event__offer-title">${title}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${price}</span>
-      </li>`).join(`\n`)}
+      ${offers.map(({title, price}, i) => i < MAX_VISIBLE_OFFERS
+      ? `<li class="event__offer">
+          <span class="event__offer-title">${title}</span> &plus;
+          &euro;&nbsp;<span class="event__offer-price">${price}</span>
+        </li>`
+      : ``).join(`\n`)}
     </ul>`
   );
 };
