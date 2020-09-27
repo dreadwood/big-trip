@@ -9,8 +9,9 @@ import {getDurationEvent} from '../utils/date.js';
 import {updateItem} from '../utils/common.js';
 
 export default class TripPresenter {
-  constructor(tripContainer) {
+  constructor(tripContainer, eventsModel) {
     this._tripContainer = tripContainer;
+    this._eventsModel = eventsModel;
     this._currentSortingType = SortingTypes.EVENT;
     this._eventPresenters = {};
     this._dayComponents = [];
@@ -35,6 +36,10 @@ export default class TripPresenter {
       this._renderDayList();
       this._renderDays();
     }
+  }
+
+  _getEvents() {
+    return this._eventsModel.getEvents();
   }
 
   _handleModeChange() {

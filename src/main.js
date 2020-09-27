@@ -1,6 +1,7 @@
 import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import FiltersView from './view/filters.js';
+import EventsModel from './model/events.js';
 // import StatisticView from './view/statistic.js';
 import TripPresenter from './presenter/trip.js';
 import {generateTripEvent} from './mock/trip-event.js';
@@ -12,12 +13,15 @@ const events = new Array(EVENT_COUNT).fill(``)
   .map(generateTripEvent)
   .sort((a, b) => a.startDate - b.startDate);
 
+const eventsModel = new EventsModel();
+eventsModel.setEvents(events);
+
 const bodyElement = document.querySelector(`.page-body`);
 const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const pageContainerElement = bodyElement.querySelector(`.trip-events`); // this._tripContainer
 
-const tripPresenter = new TripPresenter(pageContainerElement);
+const tripPresenter = new TripPresenter(pageContainerElement, eventsModel);
 
 render(headerMainElement, new TripInfoView(events), RenderPosition.AFTER_BEGIN); // информация о поездке
 render(headerControlsElement, new MenuView(), RenderPosition.AFTER_BEGIN); // меню
