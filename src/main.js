@@ -27,7 +27,7 @@ render(headerMainElement, new TripInfoView(events), RenderPosition.AFTER_BEGIN);
 render(headerControlsElement, new MenuView(), RenderPosition.AFTER_BEGIN); // меню
 
 const filterPresenter = new FilterPresenter(headerControlsElement, filterModel, eventsModel);
-const tripPresenter = new TripPresenter(pageContainerElement, eventsModel);
+const tripPresenter = new TripPresenter(pageContainerElement, eventsModel, filterModel);
 
 filterPresenter.init();
 tripPresenter.init();

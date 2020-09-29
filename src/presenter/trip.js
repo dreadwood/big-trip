@@ -6,15 +6,17 @@ import EventPresenter from './event.js';
 import {SortingTypes, UserAction, UpdateType} from '../const.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
+import {filter} from '../utils/filter.js';
 
 const sortDuration = (eventA, eventB) => getDurationEvent(eventB) - getDurationEvent(eventA);
 const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
 const sortStartDate = (eventA, eventB) => eventA.startDate - eventB.startDate;
 
 export default class TripPresenter {
-  constructor(tripContainer, eventsModel) {
+  constructor(tripContainer, eventsModel, filterModel) {
     this._tripContainer = tripContainer;
     this._eventsModel = eventsModel;
+    this._filterModel = filterModel;
     this._currentSortingType = SortingTypes.EVENT;
     this._eventPresenters = {};
     this._dayComponents = [];
@@ -30,6 +32,7 @@ export default class TripPresenter {
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -97,13 +100,17 @@ export default class TripPresenter {
 
 
   _getEvents() {
+    const filterType = this._filterModel.getFilter();
+    const events = this._eventsModel.getEvents();
+    const filtredEvents = filter[filterType](events);
+
     switch (this._currentSortingType) {
       case SortingTypes.TIME:
-        return this._eventsModel.getEvents().slice().sort(sortDuration);
+        return filtredEvents.sort(sortDuration);
       case SortingTypes.PRICE:
-        return this._eventsModel.getEvents().slice().sort(sortPrice);
+        return filtredEvents.sort(sortPrice);
       default:
-        return this._eventsModel.getEvents().slice().sort(sortStartDate);
+        return filtredEvents.sort(sortStartDate);
     }
   }
 
