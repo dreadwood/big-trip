@@ -50,7 +50,7 @@ const generateDate = () => {
   const hoursGap = getRandomInteger(maxHoursGap);
   const minutesGap = getRoundedValue(maxMinutesGap);
 
-  const currentDate = new Date(2020, 7, 15, 10, 0, 0, 0);
+  const currentDate = new Date(2020, 8, 27, 10, 0, 0, 0);
 
   currentDate.setDate(currentDate.getDate() + daysGap);
   currentDate.setHours(currentDate.getHours() + hoursGap);

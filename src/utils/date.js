@@ -45,11 +45,11 @@ export const isDatesEqual = (dateA, dateB) => {
 export const isFutureTask = (startDate) => {
   const currentDate = new Date();
 
-  return moment(currentDate).isAfter(startDate, `day`);
+  return moment(currentDate).isBefore(startDate, `day`);
 };
 
 export const isPastTask = (endDate) => {
   const currentDate = new Date();
 
-  return moment(currentDate).isBefore(endDate, `day`);
+  return moment(currentDate).isAfter(endDate, `day`);
 };
