@@ -1,6 +1,7 @@
 import EventView from '../view/event.js';
 import EventEditView from '../view/event-edit.js';
 import {render, replace, remove} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -94,6 +95,8 @@ export default class EventPresenter {
 
   _handleFavoriteClick(event) {
     this._changeData(
+        UserAction.UPDATE_EVENT,
+        UpdateType.PATCH, // возможно MINOR
         Object.assign(
             {},
             event,
@@ -105,8 +108,12 @@ export default class EventPresenter {
   }
 
   _handleFormSubmit(event) {
+    this._changeData(
+        UserAction.UPDATE_EVENT,
+        UpdateType.MINOR,
+        event
+    );
     this._replaceFormToCard();
-    this._changeData(event);
   }
 
   _handleFormArrowButtonClick() {

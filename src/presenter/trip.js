@@ -6,7 +6,6 @@ import EventPresenter from './event.js';
 import {SortingTypes} from '../const.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
-import {updateItem} from '../utils/common.js';
 
 const sortDuration = (eventA, eventB) => getDurationEvent(eventB) - getDurationEvent(eventA);
 const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
@@ -22,9 +21,13 @@ export default class TripPresenter {
     this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
 
-    this._handleEventChange = this._handleEventChange.bind(this);
+    // this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
+
+    this._eventsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -70,6 +73,11 @@ export default class TripPresenter {
   // -- новые события вставляються без обертки li над списком дней (dayList / ul)
   // -- при редактировании собития есть обертка li.trip-events__item
   // -- как у не раскрытого события
+  // 2) выбор дополнительных опций влияет на общую стоимость путешествия
+  // 3) добавить сортировку при добавлении новой точки маршрута
+  // -- один из вариантов, добавить это в модель в метод addEvent
+  // -- так же возможно стоит добавить сортировку по датам в презентер trip в метод _getEvents()
+  // 4) восстановить работу сортировки
 
 
   _getEvents() {
@@ -89,12 +97,30 @@ export default class TripPresenter {
       .forEach((presenter) => presenter.resetView());
   }
 
-  _handleEventChange(updatedEvent) {
-    // обновляет список задач
-    // this._events = updateItem(this._events, updatedEvent);
-    // this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
-    this._eventPresenters[updatedEvent.id].init(updatedEvent);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  }
+
+  // _handleEventChange(updatedEvent) {
+  //   // обновляет список задач
+  //   // this._events = updateItem(this._events, updatedEvent);
+  //   // this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
+  //   this._eventPresenters[updatedEvent.id].init(updatedEvent);
+  // }
 
   // _sortEvents(sortingType) {
   //   // сортирует задачи
@@ -140,7 +166,7 @@ export default class TripPresenter {
 
   _renderEvent(dayСontainer, event) {
     // рендер события
-    const eventPresenter = new EventPresenter(dayСontainer, this._handleEventChange, this._handleModeChange);
+    const eventPresenter = new EventPresenter(dayСontainer, this._handleViewAction, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenters[event.id] = eventPresenter;
   }
