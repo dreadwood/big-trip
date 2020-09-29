@@ -21,7 +21,6 @@ export default class TripPresenter {
     this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
 
-    // this._handleEventChange = this._handleEventChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -32,8 +31,6 @@ export default class TripPresenter {
 
   init() {
     // инициализация
-    // this._events = events.slice();
-    // this._sourceEvents = events.slice();
     if (this._getEvents().length === 0) {
       this._renderNoEvents();
     } else {
@@ -77,11 +74,18 @@ export default class TripPresenter {
   // 3) добавить сортировку при добавлении новой точки маршрута
   // -- один из вариантов, добавить это в модель в метод addEvent
   // -- так же возможно стоит добавить сортировку по датам в презентер trip в метод _getEvents()
-  // 4) восстановить работу сортировки
+  // 4) проверить что колонке «Offers» отображаются не более 3-х дополнительных опций
+  // 5) решить что делать с ф-циями sortDuration() и sortPrice()
+  // -- сохранить оставить, сохранить вынести, упразднить
+  // 6) проверка в init (this._getEvents().length === 0) завтавляет два раза
+  // -- вызывать данные из модели (те запускать _getEvents())
+
+  // DONE:
+  // 1) восстановить работу сортировки
 
 
   _getEvents() {
-    switch (this._currentSortType) {
+    switch (this._currentSortingType) {
       case SortingTypes.TIME:
         return this._eventsModel.getEvents().slice().sort(sortDuration);
       case SortingTypes.PRICE:
@@ -115,32 +119,6 @@ export default class TripPresenter {
     // - обновить всю доску (например, при переключении фильтра)
   }
 
-  // _handleEventChange(updatedEvent) {
-  //   // обновляет список задач
-  //   // this._events = updateItem(this._events, updatedEvent);
-  //   // this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
-  //   this._eventPresenters[updatedEvent.id].init(updatedEvent);
-  // }
-
-  // _sortEvents(sortingType) {
-  //   // сортирует задачи
-  //   switch (sortingType) {
-  //     case SortingTypes.TIME:
-  //       // сортировка по длительности
-  //       this._events.sort((a, b) => getDurationEvent(b) - getDurationEvent(a));
-  //       break;
-  //     case SortingTypes.PRICE:
-  //       // сортировка по цене
-  //       this._events.sort((a, b) => b.cost - a.cost);
-  //       break;
-  //     default:
-  //       this._events = this._sourceEvents.slice();
-  //   }
-
-  //   this._currentSortingType = sortingType;
-  //   this._renderDays(); // перенести
-  // }
-
   _handleSortingTypeChange(sortingType) {
     // обработчик сортировки
     if (this._currentSortingType === sortingType) {
@@ -149,7 +127,6 @@ export default class TripPresenter {
 
     this._currentSortingType = sortingType;
     this._clearDayList();
-    // this._sortEvents(sortingType);
     this._renderDays();
   }
 
