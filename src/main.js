@@ -27,4 +27,4 @@ render(headerMainElement, new TripInfoView(events), RenderPosition.AFTER_BEGIN);
 render(headerControlsElement, new MenuView(), RenderPosition.AFTER_BEGIN); // меню
 render(headerControlsElement, new FiltersView()); // фильтрация
 
-tripPresenter.init(events);
+tripPresenter.init();

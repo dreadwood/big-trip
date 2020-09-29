@@ -8,6 +8,9 @@ import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
 import {updateItem} from '../utils/common.js';
 
+const sortDuration = (eventA, eventB) => getDurationEvent(eventB) - getDurationEvent(eventA);
+const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
+
 export default class TripPresenter {
   constructor(tripContainer, eventsModel) {
     this._tripContainer = tripContainer;
@@ -24,21 +27,59 @@ export default class TripPresenter {
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
   }
 
-  init(events) {
+  init() {
     // инициализация
-    this._events = events.slice();
-    this._sourceEvents = events.slice();
-
-    if (this._events.length === 0) {
+    // this._events = events.slice();
+    // this._sourceEvents = events.slice();
+    if (this._getEvents().length === 0) {
       this._renderNoEvents();
     } else {
-      this._renderSorting();
-      this._renderDayList();
-      this._renderDays();
+      this._renderTrip();
     }
   }
 
+  // возможные варианты:
+  // 1) Нет событий - рендер собщения
+  // -- меню
+  // -- фильтры
+  // -- сообщение (PageMessageView / _renderNoEvents)
+  // 2) Есть события/нет сортировки - рендер вместе с днями
+  // -- меню
+  // -- фильтры
+  // -- сортировка
+  // -- список дней (dayList / ul)
+  // -- дни (dayComponent / li > ul)
+  // -- события (li)
+  // 3) Есть события/есть сортировка - рендер без дней
+  // -- меню
+  // -- фильтры
+  // -- сортировка
+  // -- список дней (dayList / ul)
+  // -- ОДИН день (dayComponent - пустой, без даты / li > ul)
+  // -- события (li)
+  // 4) Есть события/есть фильтр - рендер выбраных вместе с днями
+  // -- так же как 2 или 3 пункт, сортировка подсвечивается
+  // -- при смене фильтра и выборе статиситке сортировка сбрасывается
+  // 5) Статистика - рендер статистики
+  // -- меню
+  // -- фильтры
+  // -- статистика (div.page-body__container > section.statistics)
+
+  // TO-DO:
+  // 1) проверить компонент event edit на наличие обертки li (нужно испрвить)
+  // -- новые события вставляються без обертки li над списком дней (dayList / ul)
+  // -- при редактировании собития есть обертка li.trip-events__item
+  // -- как у не раскрытого события
+
+
   _getEvents() {
+    switch (this._currentSortType) {
+      case SortingTypes.TIME:
+        return this._eventsModel.getEvents().slice().sort(sortDuration);
+      case SortingTypes.PRICE:
+        return this._eventsModel.getEvents().slice().sort(sortPrice);
+    }
+
     return this._eventsModel.getEvents();
   }
 
@@ -50,29 +91,29 @@ export default class TripPresenter {
 
   _handleEventChange(updatedEvent) {
     // обновляет список задач
-    this._events = updateItem(this._events, updatedEvent);
-    this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
+    // this._events = updateItem(this._events, updatedEvent);
+    // this._sourceEvents = updateItem(this._sourceEvents, updatedEvent);
     this._eventPresenters[updatedEvent.id].init(updatedEvent);
   }
 
-  _sortEvents(sortingType) {
-    // сортирует задачи
-    switch (sortingType) {
-      case SortingTypes.TIME:
-        // сортировка по длительности
-        this._events.sort((a, b) => getDurationEvent(b) - getDurationEvent(a));
-        break;
-      case SortingTypes.PRICE:
-        // сортировка по цене
-        this._events.sort((a, b) => b.cost - a.cost);
-        break;
-      default:
-        this._events = this._sourceEvents.slice();
-    }
+  // _sortEvents(sortingType) {
+  //   // сортирует задачи
+  //   switch (sortingType) {
+  //     case SortingTypes.TIME:
+  //       // сортировка по длительности
+  //       this._events.sort((a, b) => getDurationEvent(b) - getDurationEvent(a));
+  //       break;
+  //     case SortingTypes.PRICE:
+  //       // сортировка по цене
+  //       this._events.sort((a, b) => b.cost - a.cost);
+  //       break;
+  //     default:
+  //       this._events = this._sourceEvents.slice();
+  //   }
 
-    this._currentSortingType = sortingType;
-    this._renderDays();
-  }
+  //   this._currentSortingType = sortingType;
+  //   this._renderDays(); // перенести
+  // }
 
   _handleSortingTypeChange(sortingType) {
     // обработчик сортировки
@@ -80,8 +121,10 @@ export default class TripPresenter {
       return;
     }
 
-    this._clearTripList();
-    this._sortEvents(sortingType);
+    this._currentSortingType = sortingType;
+    this._clearDayList();
+    // this._sortEvents(sortingType);
+    this._renderDays();
   }
 
   _renderSorting() {
@@ -102,18 +145,18 @@ export default class TripPresenter {
     this._eventPresenters[event.id] = eventPresenter;
   }
 
-  _renderDay(date, i) {
+  _renderDay(events, date, i) {
     // рендер одного дня
     const dayComponent = new DayView(date, i);
     const dayСontainer = dayComponent.getElement().querySelector(`.trip-events__list`);
     this._dayComponents.push(dayComponent);
 
     if (this._currentSortingType === SortingTypes.EVENT) {
-      this._events
+      events
         .filter((event) => event.startDate.toDateString() === date)
         .forEach((event) => this._renderEvent(dayСontainer, event));
     } else {
-      this._events.forEach((event) => this._renderEvent(dayСontainer, event));
+      events.forEach((event) => this._renderEvent(dayСontainer, event));
     }
 
     render(this._dayListComponent, dayComponent);
@@ -121,13 +164,15 @@ export default class TripPresenter {
 
   _renderDays() {
     // рендер несколько дней
+    const events = this._getEvents();
+
     if (this._currentSortingType === SortingTypes.EVENT) {
-      const datesEvents = [...new Set(this._events
+      const datesEvents = [...new Set(events
         .map((event) => event.startDate.toDateString()))];
 
-      datesEvents.forEach((date, i) => this._renderDay(date, i));
+      datesEvents.forEach((date, i) => this._renderDay(events, date, i));
     } else {
-      this._renderDay();
+      this._renderDay(events);
     }
   }
 
@@ -141,8 +186,8 @@ export default class TripPresenter {
     render(this._tripContainer, new PageMessageView());
   }
 
-  _clearTripList() {
-    // добавить удаление компонентов задач и дней
+  _clearDayList() {
+    // удаление компонентов задач и дней
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.destroy());
@@ -150,5 +195,11 @@ export default class TripPresenter {
 
     this._dayComponents.forEach((day) => remove(day));
     this._dayComponents = [];
+  }
+
+  _renderTrip() {
+    this._renderSorting();
+    this._renderDayList();
+    this._renderDays();
   }
 }
