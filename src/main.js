@@ -27,6 +27,6 @@ const tripPresenter = new TripPresenter(pageContainerElement, eventsModel);
 
 render(headerMainElement, new TripInfoView(events), RenderPosition.AFTER_BEGIN); // информация о поездке
 render(headerControlsElement, new MenuView(), RenderPosition.AFTER_BEGIN); // меню
-render(headerControlsElement, new FiltersView()); // фильтрация
+render(headerControlsElement, new FiltersView(`everything`)); // фильтрация
 
 tripPresenter.init();
