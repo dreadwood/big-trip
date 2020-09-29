@@ -3,7 +3,7 @@ import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
 import PageMessageView from '../view/page-message.js';
 import EventPresenter from './event.js';
-import {SortingTypes} from '../const.js';
+import {SortingTypes, UserAction, UpdateType} from '../const.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
 
@@ -79,6 +79,8 @@ export default class TripPresenter {
   // -- сохранить оставить, сохранить вынести, упразднить
   // 6) проверка в init (this._getEvents().length === 0) завтавляет два раза
   // -- вызывать данные из модели (те запускать _getEvents())
+  // 7) Упростить рендер при сортировки, чтобы избавиться от повторяющихся вызовов ф-ций
+  // -- и проверок условий
 
   // DONE:
   // 1) восстановить работу сортировки
@@ -102,21 +104,38 @@ export default class TripPresenter {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-
     // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
+
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this._eventsModel.updateEvent(updateType, update);
+        break;
+      case UserAction.ADD_EVENT:
+        this._eventsModel.addEvent(updateType, update);
+        break;
+      case UserAction.DELETE_EVENT:
+        this._eventsModel.deleteEvent(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-
     // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this._eventPresenters[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
   _handleSortingTypeChange(sortingType) {
