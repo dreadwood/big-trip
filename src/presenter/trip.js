@@ -18,8 +18,11 @@ export default class TripPresenter {
     this._eventPresenters = {};
     this._dayComponents = [];
 
-    this._sortingComponent = new SortingView();
+    this._sortingComponent = null;
+
+    // this._sortingComponent = new SortingView();
     this._dayListComponent = new DayListView();
+    this._pageMessageComponent = new PageMessageView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -31,11 +34,7 @@ export default class TripPresenter {
 
   init() {
     // инициализация
-    if (this._getEvents().length === 0) {
-      this._renderNoEvents();
-    } else {
-      this._renderTrip();
-    }
+    this._renderTrip();
   }
 
   // возможные варианты:
@@ -77,13 +76,15 @@ export default class TripPresenter {
   // 4) проверить что колонке «Offers» отображаются не более 3-х дополнительных опций
   // 5) решить что делать с ф-циями sortDuration() и sortPrice()
   // -- сохранить оставить, сохранить вынести, упразднить
-  // 6) проверка в init (this._getEvents().length === 0) завтавляет два раза
-  // -- вызывать данные из модели (те запускать _getEvents())
+  // 6)
   // 7) Упростить рендер при сортировки, чтобы избавиться от повторяющихся вызовов ф-ций
   // -- и проверок условий
+  // 8) может вынести создание PageMessageView из конструктор какой-нибудь метод
 
   // DONE:
   // 1) восстановить работу сортировки
+  // 2) проверка в init (this._getEvents().length === 0) завтавляет два раза
+  // -- вызывать данные из модели (те запускать _getEvents())
 
 
   _getEvents() {
@@ -130,10 +131,14 @@ export default class TripPresenter {
         this._eventPresenters[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        // - обновить список (например, когда событие удалилось)
+        this._clearTrip();
+        this._renderTrip();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
+        this._clearTrip();
+        this._renderTrip({resetSortingType: true});
         break;
     }
   }
@@ -145,15 +150,22 @@ export default class TripPresenter {
     }
 
     this._currentSortingType = sortingType;
-    this._clearDayList();
-    this._renderDays();
+    this._clearTrip();
+    this._renderTrip();
+    // this._clearDayList();
+    // this._renderDays();
   }
 
   _renderSorting() {
     // рендер панели сортировки
-    render(this._tripContainer, this._sortingComponent);
+    if (this._sortingComponent !== null) {
+      this._sortingComponent = null;
+    }
+
+    this._sortingComponent = new SortingView(this._currentSortingType);
     // установка обработчика сортировки
     this._sortingComponent.setSortingTypeChangeHandler(this._handleSortingTypeChange);
+    render(this._tripContainer, this._sortingComponent);
   }
 
   _renderNewEvent() {
@@ -184,10 +196,8 @@ export default class TripPresenter {
     render(this._dayListComponent, dayComponent);
   }
 
-  _renderDays() {
+  _renderDays(events) {
     // рендер несколько дней
-    const events = this._getEvents();
-
     if (this._currentSortingType === SortingTypes.EVENT) {
       const datesEvents = [...new Set(events
         .map((event) => event.startDate.toDateString()))];
@@ -198,14 +208,9 @@ export default class TripPresenter {
     }
   }
 
-  _renderDayList() {
-    // рендер списка дней
-    render(this._tripContainer, this._dayListComponent);
-  }
-
   _renderNoEvents() {
     // рендер сообщение о отсутствии событий
-    render(this._tripContainer, new PageMessageView());
+    render(this._tripContainer, this._pageMessageComponent);
   }
 
   _clearDayList() {
@@ -219,9 +224,42 @@ export default class TripPresenter {
     this._dayComponents = [];
   }
 
+  _renderDayList() {
+    // рендер списка дней
+    render(this._tripContainer, this._dayListComponent);
+  }
+
+  _clearTrip({resetSortingType = false} = {}) {
+    // Возможно стоит заменить на _clearDayList()
+    // start
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenters = {};
+
+    this._dayComponents.forEach((day) => remove(day));
+    this._dayComponents = [];
+    // end
+
+    remove(this._sortingComponent);
+    remove(this._pageMessageComponent);
+    remove(this._dayListComponent); // возможно его здесь не должно быть
+
+    if (resetSortingType) {
+      this._currentSortingType = SortingTypes.EVENT;
+    }
+  }
+
   _renderTrip() {
+    const events = this._getEvents();
+
+    if (events === 0) {
+      this._renderNoEvents();
+      return;
+    }
+
     this._renderSorting();
     this._renderDayList();
-    this._renderDays();
+    this._renderDays(events);
   }
 }
