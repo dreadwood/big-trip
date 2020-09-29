@@ -1,6 +1,7 @@
 import EventView from '../view/event.js';
 import EventEditView from '../view/event-edit.js';
 import {render, replace, remove} from '../utils/render.js';
+import {isDatesEqual} from '../utils/date.js';
 import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
@@ -23,6 +24,7 @@ export default class EventPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormArrowButtonClick = this._handleFormArrowButtonClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(event) {
@@ -38,6 +40,7 @@ export default class EventPresenter {
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setArrowButtonClickHandler(this._handleFormArrowButtonClick);
     this._eventEditComponent.setFavoritesClickHandler(this._handleFavoriteClick);
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
       render(this._dayСontainer, this._eventComponent);
@@ -107,13 +110,23 @@ export default class EventPresenter {
     );
   }
 
-  _handleFormSubmit(event) {
+  _handleFormSubmit(update) {
+    const isMinorUpdate = !isDatesEqual(this._event.startDate, update.startDate);
+
     this._changeData(
         UserAction.UPDATE_EVENT,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
+    this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(event) {
+    this._changeData(
+        UserAction.DELETE_EVENT,
         UpdateType.MINOR,
         event
     );
-    this._replaceFormToCard();
   }
 
   _handleFormArrowButtonClick() {

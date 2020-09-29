@@ -37,3 +37,7 @@ export const getFormatDuration = (durationInMs) => { // 1D 1H 25M
 };
 
 export const getDurationEvent = (event) => event.endDate - event.startDate; // ms (number)
+
+export const isDatesEqual = (dateA, dateB) => {
+  return moment(dateA).isSame(dateB);
+};

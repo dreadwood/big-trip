@@ -281,6 +281,7 @@ export default class EventEditView extends SmartView {
     this._datepickers = {};
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
@@ -293,9 +294,16 @@ export default class EventEditView extends SmartView {
     this._setDatepickers();
   }
 
-  reset(task) {
+  removeElement() {
+    // чтобы при удалении удалялись календари
+    super.removeElement();
+
+    this._destroyDateDatepickers();
+  }
+
+  reset(event) {
     this.updateData(
-        EventEditView.parseEventToData(task)
+        EventEditView.parseEventToData(event)
     );
   }
 
@@ -309,6 +317,7 @@ export default class EventEditView extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
     this.setFavoritesClickHandler(this._callback.favoritesClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setDatepickers() {
@@ -445,6 +454,17 @@ export default class EventEditView extends SmartView {
     this._callback.favoritesClick = callback;
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, this._favoritesClickHandler);
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventEditView.parseDataToEvent(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, this._deleteClickHandler);
   }
 
   static parseEventToData(event) {
