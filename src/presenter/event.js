@@ -10,8 +10,10 @@ const Mode = {
 };
 
 export default class EventPresenter {
-  constructor(dayСontainer, changeData, changeMode) {
+  constructor(dayСontainer, offersModel, destinationsModel, changeData, changeMode) {
     this._dayСontainer = dayСontainer;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
@@ -30,11 +32,15 @@ export default class EventPresenter {
   init(event) {
     this._event = event;
 
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+    const cities = this._destinationsModel.getCities();
+
     const prevEventComponent = this._eventComponent;
     const prevEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new EventView(event);
-    this._eventEditComponent = new EventEditView(event);
+    this._eventEditComponent = new EventEditView(offers, destinations, cities, event);
 
     this._eventComponent.setArrowButtonClickHandler(this._handleCardArrowButtonClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);

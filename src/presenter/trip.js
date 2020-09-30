@@ -14,10 +14,12 @@ const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
 const sortStartDate = (eventA, eventB) => eventA.startDate - eventB.startDate;
 
 export default class TripPresenter {
-  constructor(tripContainer, eventsModel, filterModel) {
+  constructor(tripContainer, eventsModel, filterModel, offersModel, destinationsModel) {
     this._tripContainer = tripContainer;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._currentSortingType = SortingTypes.EVENT;
     this._eventPresenters = {};
     this._dayComponents = [];
@@ -35,7 +37,12 @@ export default class TripPresenter {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._eventNewPresenter = new EventNewPresenter(this._tripContainer, this._handleViewAction);
+    this._eventNewPresenter = new EventNewPresenter(
+        this._tripContainer,
+        this._offersModel,
+        this._destinationsModel,
+        this._handleViewAction
+    );
   }
 
   init() {
@@ -99,6 +106,8 @@ export default class TripPresenter {
   // 12 убедиться, что фильтры работают правильно (сортировка + условия фильтрации)
   // 13 проверить элементы, которые должны становиться не активными по ТЗ
   // 14 добавить пересчет денег и маршрута при добавлении и удалении задачи
+  // 15 выставить везде одинаковые ковычки
+  // 16 стоимость больше 0
 
 
   // DONE:
@@ -197,7 +206,13 @@ export default class TripPresenter {
 
   _renderEvent(dayСontainer, event) {
     // рендер события
-    const eventPresenter = new EventPresenter(dayСontainer, this._handleViewAction, this._handleModeChange);
+    const eventPresenter = new EventPresenter(
+        dayСontainer,
+        this._offersModel,
+        this._destinationsModel,
+        this._handleViewAction,
+        this._handleModeChange
+    );
     eventPresenter.init(event);
     this._eventPresenters[event.id] = eventPresenter;
   }

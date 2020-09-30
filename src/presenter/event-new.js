@@ -4,8 +4,10 @@ import {generateId} from '../mock/trip-event.js';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class EventNewPresenter {
-  constructor(pageContainer, changeData) {
+  constructor(pageContainer, offersModel, destinationsModel, changeData) {
     this._pageContainer = pageContainer;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._changeData = changeData;
 
     this._eventEditComponent = null;
@@ -20,7 +22,11 @@ export default class EventNewPresenter {
       return;
     }
 
-    this._eventEditComponent = new EventEditView();
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+    const cities = this._destinationsModel.getCities();
+
+    this._eventEditComponent = new EventEditView(offers, destinations, cities);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
