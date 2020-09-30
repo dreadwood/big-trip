@@ -1,6 +1,8 @@
 import EventView from '../view/event.js';
 import EventEditView from '../view/event-edit.js';
 import {render, replace, remove} from '../utils/render.js';
+import {isDatesEqual} from '../utils/date.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -8,8 +10,10 @@ const Mode = {
 };
 
 export default class EventPresenter {
-  constructor(dayСontainer, changeData, changeMode) {
+  constructor(dayСontainer, offersModel, destinationsModel, changeData, changeMode) {
     this._dayСontainer = dayСontainer;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
@@ -22,21 +26,27 @@ export default class EventPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormArrowButtonClick = this._handleFormArrowButtonClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(event) {
     this._event = event;
 
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+    const cities = this._destinationsModel.getCities();
+
     const prevEventComponent = this._eventComponent;
     const prevEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new EventView(event);
-    this._eventEditComponent = new EventEditView(event);
+    this._eventEditComponent = new EventEditView(offers, destinations, cities, event);
 
     this._eventComponent.setArrowButtonClickHandler(this._handleCardArrowButtonClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setArrowButtonClickHandler(this._handleFormArrowButtonClick);
     this._eventEditComponent.setFavoritesClickHandler(this._handleFavoriteClick);
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
       render(this._dayСontainer, this._eventComponent);
@@ -94,6 +104,8 @@ export default class EventPresenter {
 
   _handleFavoriteClick(event) {
     this._changeData(
+        UserAction.UPDATE_EVENT,
+        UpdateType.PATCH, // возможно MINOR
         Object.assign(
             {},
             event,
@@ -104,9 +116,23 @@ export default class EventPresenter {
     );
   }
 
-  _handleFormSubmit(event) {
+  _handleFormSubmit(update) {
+    const isMinorUpdate = !isDatesEqual(this._event.startDate, update.startDate);
+
+    this._changeData(
+        UserAction.UPDATE_EVENT,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
     this._replaceFormToCard();
-    this._changeData(event);
+  }
+
+  _handleDeleteClick(event) {
+    this._changeData(
+        UserAction.DELETE_EVENT,
+        UpdateType.MINOR,
+        event
+    );
   }
 
   _handleFormArrowButtonClick() {

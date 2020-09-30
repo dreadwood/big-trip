@@ -37,3 +37,19 @@ export const getFormatDuration = (durationInMs) => { // 1D 1H 25M
 };
 
 export const getDurationEvent = (event) => event.endDate - event.startDate; // ms (number)
+
+export const isDatesEqual = (dateA, dateB) => {
+  return moment(dateA).isSame(dateB);
+};
+
+export const isFutureTask = (startDate) => {
+  const currentDate = new Date();
+
+  return moment(currentDate).isBefore(startDate, `day`);
+};
+
+export const isPastTask = (endDate) => {
+  const currentDate = new Date();
+
+  return moment(currentDate).isAfter(endDate, `day`);
+};
