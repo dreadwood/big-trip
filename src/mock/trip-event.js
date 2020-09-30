@@ -75,8 +75,10 @@ const getRandomOffers = (typeEvent) => {
   return Array.from(offers);
 };
 
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 export const generateTripEvent = () => {
-  const id = String(new Date().getTime() + Math.random());
+  const id = generateId();
 
   const type = getRandomArrayItems(Object.keys(EVENT_TYPES));
   const cost = getRoundedValue(MAX_PRICE);

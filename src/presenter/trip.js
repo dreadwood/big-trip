@@ -3,7 +3,8 @@ import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
 import PageMessageView from '../view/page-message.js';
 import EventPresenter from './event.js';
-import {SortingTypes, UserAction, UpdateType} from '../const.js';
+import EventNewPresenter from './event-new.js';
+import {SortingTypes, UserAction, UpdateType, FilterType} from '../const.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
@@ -33,11 +34,20 @@ export default class TripPresenter {
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._eventNewPresenter = new EventNewPresenter(this._tripContainer, this._handleViewAction);
   }
 
   init() {
     // инициализация
     this._renderTrip();
+  }
+
+  createEvent() {
+    // рендер нового события
+    this._currentSortingType = SortingTypes.EVENT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._eventNewPresenter.init();
   }
 
   // возможные варианты:
@@ -88,15 +98,16 @@ export default class TripPresenter {
   // 11 добавить модели для других структур данных
   // 12 убедиться, что фильтры работают правильно (сортировка + условия фильтрации)
   // 13 проверить элементы, которые должны становиться не активными по ТЗ
+  // 14 добавить пересчет денег и маршрута при добавлении и удалении задачи
 
 
   // DONE:
-  // 1) восстановить работу сортировки
-  // 2) проверка в init (this._getEvents().length === 0) завтавляет два раза
-  // -- вызывать данные из модели (те запускать _getEvents())
-  // 3) проверить корректно работает isDatesEqual из utils/date
-  // -- при изменении даты в собитии должна перерисовываться вся доска (для запуска сортировки)
-  // 4) убрать из представления фильтров словарь
+  //  1) восстановить работу сортировки
+  //  2) проверка в init (this._getEvents().length === 0) завтавляет два раза
+  //  -- вызывать данные из модели (те запускать _getEvents())
+  //  3) проверить корректно работает isDatesEqual из utils/date
+  //  -- при изменении даты в собитии должна перерисовываться вся доска (для запуска сортировки)
+  //  4) убрать из представления фильтров словарь
 
 
   _getEvents() {
@@ -115,6 +126,8 @@ export default class TripPresenter {
   }
 
   _handleModeChange() {
+    this._eventNewPresenter.destroy();
+
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.resetView());
@@ -182,10 +195,6 @@ export default class TripPresenter {
     render(this._tripContainer, this._sortingComponent);
   }
 
-  _renderNewEvent() {
-    // рендер нового события
-  }
-
   _renderEvent(dayСontainer, event) {
     // рендер события
     const eventPresenter = new EventPresenter(dayСontainer, this._handleViewAction, this._handleModeChange);
@@ -228,6 +237,7 @@ export default class TripPresenter {
   }
 
   _clearTrip({resetSortingType = false} = {}) {
+    this._eventNewPresenter.destroy();
     // удаление компонентов задач и дней
     Object
       .values(this._eventPresenters)

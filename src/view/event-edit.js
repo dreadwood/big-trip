@@ -15,7 +15,7 @@ const DATE_INPUTS = {
 
 const BLANK_EVENT = {
   id: null,
-  type: Object.keys(EVENT_TYPES)[1],
+  type: Object.keys(EVENT_TYPES)[0],
   startDate: new Date(),
   endDate: new Date(),
   cost: null,
@@ -142,9 +142,10 @@ const createPriceInputTemplate = (cost) => {
         &euro;
       </label>
       <input
-        class="event__input  event__input--price"
+        class="event__input event__input--price"
         id="event-price"
-        type="text"
+        type="number"
+        min="0"
         name="event-price"
         value="${cost ? cost : ``}"
       >
@@ -279,6 +280,7 @@ export default class EventEditView extends SmartView {
     super();
     this._data = EventEditView.parseEventToData(event);
     this._datepickers = {};
+    this._isNewEvent = event === BLANK_EVENT;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
@@ -287,7 +289,8 @@ export default class EventEditView extends SmartView {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._destinationClickHandler = this._destinationClickHandler.bind(this);
-    this._dateChangeHandler = this._dateChangeHandler1.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    this._dateChangeHandler = this._dateChangeHandler.bind(this);
     this._offerListClickHandler = this._offerListClickHandler.bind(this);
 
     this._setInnerHandlers();
@@ -315,9 +318,12 @@ export default class EventEditView extends SmartView {
     this._setInnerHandlers();
     this._setDatepickers();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
-    this.setFavoritesClickHandler(this._callback.favoritesClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
+
+    if (!this._isNewEvent) {
+      this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
+      this.setFavoritesClickHandler(this._callback.favoritesClick);
+    }
   }
 
   _setDatepickers() {
@@ -334,7 +340,7 @@ export default class EventEditView extends SmartView {
             minDate: type === DATE_INPUTS.START ? null : this._data.startDate,
             // eslint-disable-next-line camelcase
             time_24hr: true,
-            onClose: (evt) => this._dateChangeHandler1(evt, type),
+            onClose: (evt) => this._dateChangeHandler(evt, type),
           }
       );
     });
@@ -361,6 +367,9 @@ export default class EventEditView extends SmartView {
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`click`, this._destinationClickHandler);
+    this.getElement()
+      .querySelector(`.event__input--price`)
+      .addEventListener(`change`, this._priceChangeHandler);
 
     if (this._data.offersType) {
       this.getElement()
@@ -395,6 +404,14 @@ export default class EventEditView extends SmartView {
     });
   }
 
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      cost: Math.ceil(evt.target.value),
+    }, true);
+  }
+
   _offerListClickHandler(evt) {
     if (evt.target.tagName === `INPUT`) {
       const offerTitle = capitalizeStr(evt.target.name.replace(/-/g, ` `));
@@ -414,7 +431,7 @@ export default class EventEditView extends SmartView {
     }
   }
 
-  _dateChangeHandler1([userDate], type) {
+  _dateChangeHandler([userDate], type) {
     const dateType = `${type}Date`;
 
     this.updateData({
