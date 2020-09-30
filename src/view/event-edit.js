@@ -143,7 +143,7 @@ const createPriceInputTemplate = (cost) => {
         class="event__input event__input--price"
         id="event-price"
         type="number"
-        min="0"
+        min="1"
         name="event-price"
         value="${cost ? cost : ``}"
       >
