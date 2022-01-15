@@ -11,15 +11,16 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    watchContentBase: true,
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
   },
   module: {
     rules: [
-        {
-            test: /\.css$/i,
-            use: ['style-loader', 'css-loader']
-        },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   plugins: [

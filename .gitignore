@@ -14,4 +14,4 @@ node_modules/
 # Файлы сборки проекта
 build/
 bundle.js
-bundle.js.map
+bundle.js*
