@@ -41,7 +41,7 @@ export default class TripPresenter {
         this._tripContainer,
         this._offersModel,
         this._destinationsModel,
-        this._handleViewAction
+        this._handleViewAction,
     );
   }
 
@@ -211,7 +211,7 @@ export default class TripPresenter {
         this._offersModel,
         this._destinationsModel,
         this._handleViewAction,
-        this._handleModeChange
+        this._handleModeChange,
     );
     eventPresenter.init(event);
     this._eventPresenters[event.id] = eventPresenter;

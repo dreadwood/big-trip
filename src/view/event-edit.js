@@ -246,7 +246,7 @@ const createEventEditTemplate = (data, cities) => {
     isFavorites,
     destination,
     offers,
-    offersType
+    offersType,
   } = data;
 
   const city = destination ? destination.city : ``;
@@ -307,7 +307,7 @@ export default class EventEditView extends SmartView {
 
   reset(event) {
     this.updateData(
-        EventEditView.parseEventToData(event, this._offers)
+        EventEditView.parseEventToData(event, this._offers),
     );
   }
 
@@ -342,7 +342,7 @@ export default class EventEditView extends SmartView {
             // eslint-disable-next-line camelcase
             time_24hr: true,
             onClose: (evt) => this._dateChangeHandler(evt, type),
-          }
+          },
       );
     });
   }
@@ -491,7 +491,7 @@ export default class EventEditView extends SmartView {
         event,
         {
           offersType: getOffersByType(event.type, offers),
-        }
+        },
     );
   }
 

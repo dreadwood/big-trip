@@ -12,13 +12,13 @@ export const EVENT_TRANSPORT = [
   `ship`,
   `transport`,
   `drive`,
-  `flight`
+  `flight`,
 ];
 
 export const EVENT_ACTIVITY = [
   `check-in`,
   `sightseeing`,
-  `restaurant`
+  `restaurant`,
 ];
 
 export const EVENT_TYPES = {
@@ -50,7 +50,7 @@ const generateDate = () => {
   const hoursGap = getRandomInteger(maxHoursGap);
   const minutesGap = getRoundedValue(maxMinutesGap);
 
-  const currentDate = new Date(2020, 8, 27, 10, 0, 0, 0);
+  const currentDate = new Date(2022, 0, 14, 10, 0, 0, 0);
 
   currentDate.setDate(currentDate.getDate() + daysGap);
   currentDate.setHours(currentDate.getHours() + hoursGap);

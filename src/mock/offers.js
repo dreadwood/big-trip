@@ -13,29 +13,29 @@ export const TYPES_OF_OFFERS = [
     offers: [
       {
         title: `Infotainment system`,
-        price: 50
+        price: 50,
       },
       {
         title: `Order meal`,
-        price: 100
+        price: 100,
       },
       {
         title: `Choose seats`,
-        price: 190
+        price: 190,
       },
     ],
   },
   {
     type: `train`,
-    offers: []
+    offers: [],
   },
   {
     type: `ship`,
-    offers: []
+    offers: [],
   },
   {
     type: `transport`,
-    offers: []
+    offers: [],
   },
   {
     type: `drive`,
@@ -69,7 +69,7 @@ export const TYPES_OF_OFFERS = [
         title: `Travel by train`,
         price: 40,
       },
-    ]
+    ],
   },
   {
     type: `check-in`,
@@ -103,6 +103,6 @@ export const TYPES_OF_OFFERS = [
   },
   {
     type: `restaurant`,
-    offers: []
+    offers: [],
   },
 ];

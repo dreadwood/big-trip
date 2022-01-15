@@ -2,7 +2,7 @@ import AbstractView from "./abstract.js";
 
 const TABS = [
   `Table`,
-  `Stats`
+  `Stats`,
 ];
 
 const createMenuTemplate = (selectedFilter) => {

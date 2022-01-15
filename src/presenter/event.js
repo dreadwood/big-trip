@@ -6,7 +6,7 @@ import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
+  EDITING: `EDITING`,
 };
 
 export default class EventPresenter {
@@ -110,9 +110,9 @@ export default class EventPresenter {
             {},
             event,
             {
-              isFavorites: !this._event.isFavorites
-            }
-        )
+              isFavorites: !this._event.isFavorites,
+            },
+        ),
     );
   }
 
@@ -122,7 +122,7 @@ export default class EventPresenter {
     this._changeData(
         UserAction.UPDATE_EVENT,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
-        update
+        update,
     );
     this._replaceFormToCard();
   }
@@ -131,7 +131,7 @@ export default class EventPresenter {
     this._changeData(
         UserAction.DELETE_EVENT,
         UpdateType.MINOR,
-        event
+        event,
     );
   }
 

@@ -7,7 +7,7 @@ const SentencesDescription = {
 
 const PhotosDescription = {
   MIN: 1,
-  MAX: 10
+  MAX: 10,
 };
 
 export const CITIES = [

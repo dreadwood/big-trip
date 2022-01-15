@@ -50,7 +50,7 @@ export default class EventNewPresenter {
     this._changeData(
         UserAction.ADD_EVENT,
         UpdateType.MINOR, // возможно мажор, тк изменяеться фильтры (кол-во)
-        Object.assign(event, {id: generateId()})
+        Object.assign(event, {id: generateId()}),
     );
     this.destroy();
   }
