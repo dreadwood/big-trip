@@ -13,7 +13,7 @@ const createStatisticTemplate = () => {
       <h2 class="visually-hidden">Trip statistics</h2>
       ${STATISTICS_TYPE.map((item) => `<div class="statistics__item statistics__item--${item}">
         <canvas class="statistics__chart statistics__chart--${item}" width="900"></canvas>
-      </div>`)}
+      </div>`).join(``)}
     </section>`
   );
 };

@@ -50,6 +50,10 @@ export default class TripPresenter {
     this._renderTrip();
   }
 
+  destroy() {
+    this._clearTrip();
+  }
+
   createEvent() {
     // рендер нового события
     this._currentSortingType = SortingTypes.EVENT;
@@ -87,7 +91,7 @@ export default class TripPresenter {
   // TO-DO:
   // 1) проверить компонент event edit на наличие обертки li (нужно испрвить)
   // -- новые события вставляються без обертки li над списком дней (dayList / ul)
-  // -- при редактировании собития есть обертка li.trip-events__item
+  // -- при редактировании события есть обертка li.trip-events__item
   // -- как у не раскрытого события
   // 2) выбор дополнительных опций влияет на общую стоимость путешествия
   // 3) добавить сортировку при добавлении новой точки маршрута
@@ -113,7 +117,7 @@ export default class TripPresenter {
   //  2) проверка в init (this._getEvents().length === 0) завтавляет два раза
   //  -- вызывать данные из модели (те запускать _getEvents())
   //  3) проверить корректно работает isDatesEqual из utils/date
-  //  -- при изменении даты в собитии должна перерисовываться вся доска (для запуска сортировки)
+  //  -- при изменении даты в событии должна перерисовываться вся доска (для запуска сортировки)
   //  4) убрать из представления фильтров словарь
   //  5) добавить модели для других структур данных
   //  6) стоимость должна быть больше 0
@@ -175,8 +179,8 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
-        this._clearTrip();
-        this._renderTrip({resetSortingType: true});
+        this._clearTrip({resetSortingType: true});
+        this._renderTrip();
         break;
     }
   }
@@ -199,7 +203,6 @@ export default class TripPresenter {
     }
 
     this._sortingComponent = new SortingView(this._currentSortingType);
-    // установка обработчика сортировки
     this._sortingComponent.setSortingTypeChangeHandler(this._handleSortingTypeChange);
     render(this._tripContainer, this._sortingComponent);
   }
@@ -251,21 +254,25 @@ export default class TripPresenter {
     render(this._tripContainer, this._pageMessageComponent);
   }
 
-  _clearTrip({resetSortingType = false} = {}) {
+  // для обновления доски при сортировки и фильтрации
+  _clearTrip({resetSortingType = false} = {}) { // нужен объект? может просто параметр? Может добавить параметр сброса фильтра?
+    // удаления новой события
     this._eventNewPresenter.destroy();
-    // удаление компонентов задач и дней
+    // удаление событий
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenters = {};
-
+    // удаления дней
     this._dayComponents.forEach((day) => remove(day));
     this._dayComponents = [];
-    // end
 
+    // удаления меню сортировки
     remove(this._sortingComponent);
+    // удаления сообщения о отсутствия задач
     remove(this._pageMessageComponent);
-    remove(this._dayListComponent); // возможно его здесь не должно быть
+    // удаления списка дней
+    remove(this._dayListComponent); // TODO: возможно его здесь не должно быть
 
     if (resetSortingType) {
       this._currentSortingType = SortingTypes.EVENT;
@@ -275,7 +282,7 @@ export default class TripPresenter {
   _renderTrip() {
     const events = this._getEvents();
 
-    if (events === 0) {
+    if (events.length === 0) {
       this._renderNoEvents();
       return;
     }

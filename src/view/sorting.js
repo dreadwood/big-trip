@@ -51,7 +51,7 @@ export default class SortingView extends AbstractView {
   }
 
   _sortingTypeChangeHandler(evt) {
-    if (evt.target.tagName !== `INPUT`) {
+    if (!evt.target.classList.contains(`trip-sort__input`)) {
       return;
     }
 
