@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayItems} from '../utils/common.js';
+import {getRandomInteger, getRandomArrayItems, capitalizeStr} from '../utils/common.js';
 import {TYPES_OF_OFFERS} from './offers.js';
 import {CITIES, destinationsList} from './destinations.js';
 
@@ -21,18 +21,30 @@ export const EVENT_ACTIVITY = [
   `restaurant`,
 ];
 
-export const EVENT_TYPES = {
-  'taxi': `Taxi to`,
-  'bus': `Bus to`,
-  'train': `Train to`,
-  'ship': `Ship to`,
-  'transport': `Transport to`,
-  'drive': `Drive to`,
-  'flight': `Flight to`,
-  'check-in': `Check-in in`,
-  'sightseeing': `Sightseeing in`,
-  'restaurant': `Restaurant in`,
+export const EVENT_EMOJI = {
+  'taxi': `🚕`,
+  'bus': `🚌`,
+  'train': `🚂`,
+  'ship': `🚢`,
+  'transport': `🚆`,
+  'drive': `🚗`,
+  'flight': `✈️`,
+  'check-in': `🏨`,
+  'sightseeing': `🏛`,
+  'restaurant': `🍴`,
 };
+
+export const allTypesOfEvents = [...EVENT_TRANSPORT, ...EVENT_ACTIVITY];
+
+export const eventWithSyntax = {
+  ...EVENT_TRANSPORT.reduce((acc, item) => {
+    acc[item] = `${capitalizeStr(item)} to`;
+    return acc;
+  }, {}),
+  ...EVENT_ACTIVITY.reduce((acc, item) => {
+    acc[item] = `${capitalizeStr(item)} in`;
+    return acc;
+  }, {})};
 
 const getRoundedValue = (maxValue) => {
   const rounding = 5;
@@ -80,7 +92,7 @@ export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10)
 export const generateTripEvent = () => {
   const id = generateId();
 
-  const type = getRandomArrayItems(Object.keys(EVENT_TYPES));
+  const type = getRandomArrayItems(allTypesOfEvents);
   const cost = getRoundedValue(MAX_PRICE);
 
   const startDate = generateDate();

@@ -51,7 +51,7 @@ const handleSiteMenuClick = (tab) => {
       filterPresenter.destroy();
       tripPresenter.destroy();
       // Показать статистику
-      statisticComponent = new StatisticView();
+      statisticComponent = new StatisticView(eventsModel.getEvents());
       render(pageContainerElement, statisticComponent);
       break;
   }

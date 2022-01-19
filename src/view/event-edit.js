@@ -1,4 +1,4 @@
-import {EVENT_TYPES, EVENT_TRANSPORT, EVENT_ACTIVITY} from '../mock/trip-event.js';
+import {EVENT_TRANSPORT, EVENT_ACTIVITY, allTypesOfEvents, eventWithSyntax} from '../mock/trip-event.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getFullDateWithSlash} from '../utils/date.js';
 import SmartView from './smart.js';
@@ -13,7 +13,7 @@ const DATE_INPUTS = {
 
 const BLANK_EVENT = {
   id: null,
-  type: Object.keys(EVENT_TYPES)[0],
+  type: allTypesOfEvents[0],
   startDate: new Date(),
   endDate: new Date(),
   cost: null,
@@ -88,7 +88,7 @@ const createDestinationInputTemplate = (selectedType, city, cities) => {
   return (
     `<div class="event__field-group event__field-group--destination">
       <label class="event__label event__type-output" for="event-destination">
-        ${EVENT_TYPES[selectedType]}
+        ${eventWithSyntax[selectedType]}
       </label>
       <input
         class="event__input event__input--destination"
