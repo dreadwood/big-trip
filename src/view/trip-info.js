@@ -42,7 +42,7 @@ const createTripInfoTemplate = (events) => {
   const fullCost = cityQuantity ? events.reduce((acc, event) => (acc + event.cost), 0) : 0;
 
   return (
-    `<section class="trip-main__trip-info trip-info">
+    `<section class="trip-info">
       <div class="trip-info__main">
         ${routeTemplate}
         ${datesTemplate}

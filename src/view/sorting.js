@@ -28,7 +28,7 @@ const createInputTemplate = (currentSorting) => Object.entries(SortingTypes).map
 
 const createSortingTemplate = (currentSorting) => {
   return (
-    `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+    `<form class="trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day">Day</span>
 
       ${createInputTemplate(currentSorting).join(`\n`)}

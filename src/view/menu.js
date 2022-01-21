@@ -3,7 +3,7 @@ import {MenuTabs} from "../const.js";
 
 const createMenuTemplate = (selectedTab) => {
   return (
-    `<nav class="trip-controls__trip-tabs  trip-tabs">
+    `<nav class="trip-tabs">
       ${Object.values(MenuTabs).map((tab) => `<a
         class="trip-tabs__btn ${tab === selectedTab ? `trip-tabs__btn--active` : ``}"
         href="#"

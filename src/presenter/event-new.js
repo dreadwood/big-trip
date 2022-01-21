@@ -4,8 +4,8 @@ import {generateId} from '../mock/trip-event.js';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class EventNewPresenter {
-  constructor(pageContainer, offersModel, destinationsModel, changeData) {
-    this._pageContainer = pageContainer;
+  constructor(tripContainer, offersModel, destinationsModel, changeData) {
+    this._tripContainer = tripContainer;
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
     this._changeData = changeData;
@@ -30,7 +30,7 @@ export default class EventNewPresenter {
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._pageContainer, this._eventEditComponent, RenderPosition.AFTER_BEGIN);
+    render(this._tripContainer, this._eventEditComponent, RenderPosition.AFTER_BEGIN);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }

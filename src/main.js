@@ -1,4 +1,3 @@
-import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import StatisticView from './view/statistic.js';
 import EventsModel from './model/events.js';
@@ -10,7 +9,7 @@ import FilterPresenter from './presenter/filter.js';
 import {generateTripEvent} from './mock/trip-event.js';
 import {TYPES_OF_OFFERS} from './mock/offers.js';
 import {destinationsList} from './mock/destinations.js';
-import {RenderPosition, render, remove} from './utils/render.js';
+import {render, remove} from './utils/render.js';
 
 const EVENT_COUNT = 20;
 
@@ -25,14 +24,13 @@ offersModel.setOffers(TYPES_OF_OFFERS);
 eventsModel.setEvents(events);
 destinationsModel.setDestinations(destinationsList);
 
-const bodyElement = document.querySelector(`.page-body`);
-const headerMainElement = bodyElement.querySelector(`.trip-main`);
-const headerControlsElement = headerMainElement.querySelector(`.trip-controls`);
-const pageContainerElement = bodyElement.querySelector(`.trip-events`); // this._tripContainer
+const infoContainer = document.querySelector(`.trip-main__trip-info`);
+const tabsContainer = document.querySelector(`.trip-controls__trip-tabs`);
+const filtersContainer = document.querySelector(`.trip-controls__trip-filters`);
+const pageContainer = document.querySelector(`.trip-events`);
 
-render(headerMainElement, new TripInfoView(events), RenderPosition.AFTER_BEGIN); // инфо (пункты, даты и цена)
 const menuComponent = new MenuView();
-render(headerControlsElement, menuComponent, RenderPosition.AFTER_BEGIN); // меню (список дней, статистика)
+render(tabsContainer, menuComponent); // меню (table, stat)
 
 let statisticComponent = null;
 
@@ -52,13 +50,13 @@ const handleSiteMenuClick = (tab) => {
       tripPresenter.destroy();
       // Показать статистику
       statisticComponent = new StatisticView(eventsModel.getEvents());
-      render(pageContainerElement, statisticComponent);
+      render(pageContainer, statisticComponent);
       break;
   }
 };
 
-const filterPresenter = new FilterPresenter(headerControlsElement, filterModel, eventsModel);
-const tripPresenter = new TripPresenter(pageContainerElement, eventsModel, filterModel, offersModel, destinationsModel);
+const filterPresenter = new FilterPresenter(filtersContainer, filterModel, eventsModel);
+const tripPresenter = new TripPresenter(pageContainer, infoContainer, eventsModel, filterModel, offersModel, destinationsModel);
 
 menuComponent.setMenuClickHandler(handleSiteMenuClick);
 

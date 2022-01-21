@@ -1,6 +1,7 @@
 import SortingView from '../view/sorting.js';
 import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
+import TripInfoView from '../view/trip-info.js';
 import PageMessageView from '../view/page-message.js';
 import EventPresenter from './event.js';
 import EventNewPresenter from './event-new.js';
@@ -11,11 +12,13 @@ import {filter} from '../utils/filter.js';
 
 const sortDuration = (eventA, eventB) => getDurationEvent(eventB) - getDurationEvent(eventA);
 const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
-const sortStartDate = (eventA, eventB) => eventA.startDate - eventB.startDate;
 
 export default class TripPresenter {
-  constructor(tripContainer, eventsModel, filterModel, offersModel, destinationsModel) {
-    this._tripContainer = tripContainer;
+  constructor(pageContainer, tripInfoContainer, eventsModel, filterModel, offersModel, destinationsModel) {
+    this._tripInfoContainer = tripInfoContainer;
+    this._pageContainer = pageContainer;
+    this._tripContainer = pageContainer.querySelector(`.trip-events__trip-days`);
+    this._sortContainer = pageContainer.querySelector(`.trip-events__trip-sort`);
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
     this._offersModel = offersModel;
@@ -24,6 +27,7 @@ export default class TripPresenter {
     this._eventPresenters = {};
     this._dayComponents = [];
 
+    this._tripInfoComponent = null;
     this._sortingComponent = null;
 
     this._dayListComponent = new DayListView();
@@ -124,8 +128,8 @@ export default class TripPresenter {
 
 
   _getEvents() {
-    const filterType = this._filterModel.getFilter();
     const events = this._eventsModel.getEvents();
+    const filterType = this._filterModel.getFilter();
     const filtredEvents = filter[filterType](events);
 
     switch (this._currentSortingType) {
@@ -134,7 +138,7 @@ export default class TripPresenter {
       case SortingTypes.PRICE:
         return filtredEvents.sort(sortPrice);
       default:
-        return filtredEvents.sort(sortStartDate);
+        return filtredEvents;
     }
   }
 
@@ -163,6 +167,8 @@ export default class TripPresenter {
         this._eventsModel.deleteEvent(updateType, update);
         break;
     }
+
+    this._renderTripInfo();
   }
 
   _handleModelEvent(updateType, data) {
@@ -204,7 +210,7 @@ export default class TripPresenter {
 
     this._sortingComponent = new SortingView(this._currentSortingType);
     this._sortingComponent.setSortingTypeChangeHandler(this._handleSortingTypeChange);
-    render(this._tripContainer, this._sortingComponent);
+    render(this._sortContainer, this._sortingComponent);
   }
 
   _renderEvent(dayСontainer, event) {
@@ -292,5 +298,17 @@ export default class TripPresenter {
     render(this._tripContainer, this._dayListComponent);
 
     this._renderDays(events);
+
+    this._renderTripInfo(); // удалить
+  }
+
+  _renderTripInfo() {
+    if (this._tripInfoComponent !== null) {
+      remove(this._tripInfoComponent);
+      this._tripInfoComponent = null;
+    }
+
+    this._tripInfoComponent = new TripInfoView(this._getEvents());
+    render(this._tripInfoContainer, this._tripInfoComponent);
   }
 }

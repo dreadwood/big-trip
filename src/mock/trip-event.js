@@ -62,7 +62,7 @@ const generateDate = () => {
   const hoursGap = getRandomInteger(maxHoursGap);
   const minutesGap = getRoundedValue(maxMinutesGap);
 
-  const currentDate = new Date(2022, 0, 14, 10, 0, 0, 0);
+  const currentDate = new Date(2022, 0, 19, 10, 0, 0, 0);
 
   currentDate.setDate(currentDate.getDate() + daysGap);
   currentDate.setHours(currentDate.getHours() + hoursGap);
