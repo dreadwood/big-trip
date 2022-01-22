@@ -50,6 +50,11 @@ export default class SortingView extends AbstractView {
     return createSortingTemplate(this._currentSortingType);
   }
 
+  setSortingTypeChangeHandler(callback) {
+    this._callback.sortingTypeChange = callback;
+    this.getElement().addEventListener(`change`, this._sortingTypeChangeHandler);
+  }
+
   _sortingTypeChangeHandler(evt) {
     if (!evt.target.classList.contains(`trip-sort__input`)) {
       return;
@@ -57,10 +62,5 @@ export default class SortingView extends AbstractView {
 
     evt.preventDefault();
     this._callback.sortingTypeChange(evt.target.value);
-  }
-
-  setSortingTypeChangeHandler(callback) {
-    this._callback.sortingTypeChange = callback;
-    this.getElement().addEventListener(`change`, this._sortingTypeChangeHandler);
   }
 }

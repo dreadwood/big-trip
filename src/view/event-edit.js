@@ -1,4 +1,4 @@
-import {EVENT_TRANSPORT, EVENT_ACTIVITY, allTypesOfEvents, eventWithSyntax} from '../mock/trip-event.js';
+import {EVENT_TRANSPORT, EVENT_ACTIVITY, allTypesOfEvents, eventWithSyntax} from '../mock/event.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getFullDateWithSlash} from '../utils/date.js';
 import SmartView from './smart.js';

@@ -6,7 +6,7 @@ import OffersModel from './model/offers.js';
 import DestinationsModel from './model/destinations.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
-import {generateTripEvent} from './mock/trip-event.js';
+import {generateTripEvent} from './mock/event.js';
 import {TYPES_OF_OFFERS} from './mock/offers.js';
 import {destinationsList} from './mock/destinations.js';
 import {render, remove} from './utils/render.js';

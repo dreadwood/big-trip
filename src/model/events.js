@@ -8,7 +8,6 @@ export default class EventsModel extends Observer {
 
   setEvents(events) {
     this._sortEvents(events);
-    // this._events = events.slice();
   }
 
   getEvents() {
@@ -22,23 +21,14 @@ export default class EventsModel extends Observer {
       throw new Error(`Can't update unexisting event`);
     }
 
-    this._events = [
-      ...this._events.slice(0, index),
-      update,
-      ...this._events.slice(index + 1),
-    ]; // упростить?
-
+    this._events.splice(index, 1, update);
     this._sortEvents(this._events);
 
     this._notify(updateType, update);
   }
 
   addEvent(updateType, update) {
-    this._events = [
-      update,
-      ...this._events,
-    ]; // упростить?
-
+    this._events.push(update);
     this._sortEvents(this._events);
 
     this._notify(updateType, update);
@@ -51,10 +41,7 @@ export default class EventsModel extends Observer {
       throw new Error(`Can't delete unexisting event`);
     }
 
-    this._events = [
-      ...this._events.slice(0, index),
-      ...this._events.slice(index + 1),
-    ];
+    this._events.splice(index, 1);
 
     this._notify(updateType);
   }

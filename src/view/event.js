@@ -1,4 +1,4 @@
-import {eventWithSyntax} from '../mock/trip-event.js';
+import {eventWithSyntax} from '../mock/event.js';
 import {getTime, getFormatDuration, getFullDatetime} from '../utils/date.js';
 import AbstractView from "./abstract.js";
 
