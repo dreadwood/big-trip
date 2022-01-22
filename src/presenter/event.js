@@ -25,7 +25,7 @@ export default class EventPresenter {
     this._handleCardArrowButtonClick = this._handleCardArrowButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormArrowButtonClick = this._handleFormArrowButtonClick.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleFormFavoriteClick = this._handleFormFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
@@ -117,7 +117,9 @@ export default class EventPresenter {
   }
 
   _handleFormSubmit(update) {
-    const isMinorUpdate = !isDatesEqual(this._event.startDate, update.startDate);
+    const isMinorUpdate = this._event.cost !== update.cost
+      || !isDatesEqual(this._event.startDate, update.startDate)
+      || !isDatesEqual(this._event.endDate, update.endDate);
 
     this._changeData(
         UserAction.UPDATE_EVENT,
