@@ -5,4 +5,5 @@ export const filter = {
   [FilterType.EVERYTHING]: (events) => events.slice(),
   [FilterType.FUTURE]: (events) => events.filter((event) => isFutureTask(event.startDate)),
   [FilterType.PAST]: (events) => events.filter((event) => isPastTask(event.endDate)),
+  [FilterType.FAVORITE]: (events) => events.filter((event) => event.isFavorites),
 };

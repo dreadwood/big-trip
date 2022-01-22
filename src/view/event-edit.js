@@ -323,8 +323,24 @@ export default class EventEditView extends SmartView {
 
     if (!this._isNewEvent) {
       this.setArrowButtonClickHandler(this._callback.arrowButtonClick);
-      this.setFavoritesClickHandler(this._callback.favoritesClick);
     }
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, this._deleteClickHandler);
+  }
+
+  setArrowButtonClickHandler(callback) {
+    this._callback.arrowButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._arrowButtonClickHandler);
   }
 
   _setDatepickers() {
@@ -371,6 +387,12 @@ export default class EventEditView extends SmartView {
     this.getElement()
       .querySelector(`.event__input--price`)
       .addEventListener(`change`, this._priceChangeHandler);
+
+    if (!this._isNewEvent) {
+      this.getElement()
+        .querySelector(`.event__favorite-btn`)
+        .addEventListener(`click`, this._favoritesClickHandler);
+    }
 
     if (this._data.offersType) {
       this.getElement()
@@ -442,36 +464,15 @@ export default class EventEditView extends SmartView {
     this._setDatepickers();
   }
 
+  _favoritesClickHandler() {
+    this.updateData({
+      isFavorites: !this._data.isFavorites,
+    }, true);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(EventEditView.parseDataToEvent(this._data));
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
-  }
-
-  _arrowButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.arrowButtonClick();
-  }
-
-  setArrowButtonClickHandler(callback) {
-    this._callback.arrowButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, this._arrowButtonClickHandler);
-  }
-
-  _favoritesClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoritesClick(EventEditView.parseDataToEvent(this._data));
-  }
-
-  setFavoritesClickHandler(callback) {
-    this._callback.favoritesClick = callback;
-    this.getElement().querySelector(`.event__favorite-btn`)
-      .addEventListener(`click`, this._favoritesClickHandler);
   }
 
   _deleteClickHandler(evt) {
@@ -479,10 +480,9 @@ export default class EventEditView extends SmartView {
     this._callback.deleteClick(EventEditView.parseDataToEvent(this._data));
   }
 
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector(`.event__reset-btn`)
-      .addEventListener(`click`, this._deleteClickHandler);
+  _arrowButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.arrowButtonClick();
   }
 
   static parseEventToData(event, offers) {

@@ -17,13 +17,35 @@ const createOffersTemplate = (offers) => {
   );
 };
 
+const createFavoriteTemplate = (id, isFavorites) => {
+  return (
+    `<input
+      id="event-favorite-${id}"
+      class="event__favorite-checkbox  visually-hidden"
+      type="checkbox"
+      name="event-favorite"
+      ${isFavorites ? `checked` : ``}
+    >
+
+    <label class="event__favorite-btn" for="event-favorite-${id}">
+      <span class="visually-hidden">Add to favorite</span>
+      <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+        <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688
+          14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+      </svg>
+    </label>`
+  );
+};
+
 const createEventTemplate = (event) => {
   const {
+    id,
     type,
     offers,
     startDate,
     endDate,
     cost,
+    isFavorites,
     destination,
   } = event;
 
@@ -35,6 +57,7 @@ const createEventTemplate = (event) => {
   const duration = getFormatDuration(endDate - startDate);
 
   const offersTemplate = offers ? createOffersTemplate(offers) : ``;
+  const favoriteTemplate = createFavoriteTemplate(id, isFavorites);
 
   return (
     `<li class="trip-events__item">
@@ -60,6 +83,7 @@ const createEventTemplate = (event) => {
         <h4 class="visually-hidden">Offers:</h4>
 
         ${offersTemplate}
+        ${favoriteTemplate}
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -75,10 +99,21 @@ export default class EventView extends AbstractView {
 
     this._event = event;
     this._arrowButtonClickHandler = this._arrowButtonClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
+  }
+
+  setArrowButtonClickHandler(callback) {
+    this._callback.arrowButtonClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoritesClickHandler);
   }
 
   _arrowButtonClickHandler(evt) {
@@ -86,8 +121,8 @@ export default class EventView extends AbstractView {
     this._callback.arrowButtonClick();
   }
 
-  setArrowButtonClickHandler(callback) {
-    this._callback.arrowButtonClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._arrowButtonClickHandler);
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoritesClick(this._event);
   }
 }

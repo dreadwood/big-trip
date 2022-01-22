@@ -25,7 +25,7 @@ export default class EventPresenter {
     this._handleCardArrowButtonClick = this._handleCardArrowButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormArrowButtonClick = this._handleFormArrowButtonClick.bind(this);
-    this._handleFormFavoriteClick = this._handleFormFavoriteClick.bind(this);
+    this._handleCardFavoriteClick = this._handleCardFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
@@ -45,7 +45,7 @@ export default class EventPresenter {
     this._eventComponent.setArrowButtonClickHandler(this._handleCardArrowButtonClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setArrowButtonClickHandler(this._handleFormArrowButtonClick);
-    this._eventEditComponent.setFavoritesClickHandler(this._handleFavoriteClick);
+    this._eventComponent.setFavoritesClickHandler(this._handleCardFavoriteClick);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -102,10 +102,10 @@ export default class EventPresenter {
     this._replaceCardToForm();
   }
 
-  _handleFavoriteClick(event) {
+  _handleCardFavoriteClick(event) {
     this._changeData(
         UserAction.UPDATE_EVENT,
-        UpdateType.PATCH, // возможно MINOR
+        UpdateType.MINOR,
         Object.assign(
             {},
             event,
@@ -118,6 +118,7 @@ export default class EventPresenter {
 
   _handleFormSubmit(update) {
     const isMinorUpdate = this._event.cost !== update.cost
+      || this._event.isFavorites !== update.isFavorites
       || !isDatesEqual(this._event.startDate, update.startDate)
       || !isDatesEqual(this._event.endDate, update.endDate);
 

@@ -299,7 +299,7 @@ export default class TripPresenter {
 
     this._renderDays(events);
 
-    this._renderTripInfo(); // удалить
+    this._renderTripInfo();
   }
 
   _renderTripInfo() {
