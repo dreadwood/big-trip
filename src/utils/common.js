@@ -14,3 +14,5 @@ export const getRandomArrayItems = (array) => {
 };
 
 export const capitalizeStr = (str) => (!str) ? str : str[0].toUpperCase() + str.slice(1);
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

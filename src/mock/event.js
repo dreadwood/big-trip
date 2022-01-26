@@ -1,50 +1,14 @@
-import {getRandomInteger, getRandomArrayItems, capitalizeStr} from '../utils/common.js';
+import {
+  getRandomInteger,
+  getRandomArrayItems,
+  generateId,
+} from '../utils/common.js';
 import {TYPES_OF_OFFERS} from './offers.js';
 import {CITIES, destinationsList} from './destinations.js';
+import {allTypesOfEvents} from '../const.js';
 
 const MAX_PRICE = 1000;
 const MAX_TIME_EVENT = 180;
-
-export const EVENT_TRANSPORT = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `transport`,
-  `drive`,
-  `flight`,
-];
-
-export const EVENT_ACTIVITY = [
-  `check-in`,
-  `sightseeing`,
-  `restaurant`,
-];
-
-export const EVENT_EMOJI = {
-  'taxi': `🚕`,
-  'bus': `🚌`,
-  'train': `🚂`,
-  'ship': `🚢`,
-  'transport': `🚆`,
-  'drive': `🚗`,
-  'flight': `✈️`,
-  'check-in': `🏨`,
-  'sightseeing': `🏛`,
-  'restaurant': `🍴`,
-};
-
-export const allTypesOfEvents = [...EVENT_TRANSPORT, ...EVENT_ACTIVITY];
-
-export const eventWithSyntax = {
-  ...EVENT_TRANSPORT.reduce((acc, item) => {
-    acc[item] = `${capitalizeStr(item)} to`;
-    return acc;
-  }, {}),
-  ...EVENT_ACTIVITY.reduce((acc, item) => {
-    acc[item] = `${capitalizeStr(item)} in`;
-    return acc;
-  }, {})};
 
 const getRoundedValue = (maxValue) => {
   const rounding = 5;
@@ -72,7 +36,9 @@ const generateDate = () => {
 };
 
 const getRandomOffers = (typeEvent) => {
-  const eventOffers = TYPES_OF_OFFERS.find((item) => item.type === typeEvent).offers;
+  const eventOffers = TYPES_OF_OFFERS
+    .find((item) => item.type === typeEvent)
+    .offers;
   const offersCount = eventOffers.length;
 
   if (offersCount === 0) {
@@ -87,8 +53,6 @@ const getRandomOffers = (typeEvent) => {
   return Array.from(offers);
 };
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 export const generateTripEvent = () => {
   const id = generateId();
 
@@ -96,7 +60,8 @@ export const generateTripEvent = () => {
   const cost = getRoundedValue(MAX_PRICE);
 
   const startDate = generateDate();
-  const endDate = new Date(startDate.getTime() + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
+  const endDate = new Date(startDate.getTime()
+    + getRoundedValue(MAX_TIME_EVENT) * 60 * 1000);
 
   const isFavorites = getRandomInteger() ? true : false;
   const offers = getRandomInteger() ? getRandomOffers(type) : [];

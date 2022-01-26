@@ -1,15 +1,21 @@
-import AbstractView from "./abstract.js";
+import {MessagePage} from '../const.js';
+import AbstractView from './abstract.js';
 
-const MESSAGE_NO_EVENT = `Click New Event to create your first point`;
 
-const createPageMessageTemplate = () => {
+const createPageMessageTemplate = (message = MessagePage.NO_EVENT) => {
   return (
-    `<p class="trip-events__msg">${MESSAGE_NO_EVENT}</p>`
+    `<p class="trip-events__msg">${message}</p>`
   );
 };
 
 export default class PageMessageView extends AbstractView {
+  constructor(message) {
+    super();
+
+    this._message = message;
+  }
+
   getTemplate() {
-    return createPageMessageTemplate();
+    return createPageMessageTemplate(this._message);
   }
 }

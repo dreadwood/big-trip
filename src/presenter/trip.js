@@ -5,10 +5,16 @@ import TripInfoView from '../view/trip-info.js';
 import PageMessageView from '../view/page-message.js';
 import EventPresenter from './event.js';
 import EventNewPresenter from './event-new.js';
-import {SortingTypes, UserAction, UpdateType, FilterType} from '../const.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
 import {filter} from '../utils/filter.js';
+import {
+  SortingTypes,
+  UserAction,
+  UpdateType,
+  FilterType,
+  MessagePage,
+} from '../const.js';
 
 const sortDuration = (eventA, eventB) => getDurationEvent(eventB) - getDurationEvent(eventA);
 const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
@@ -26,12 +32,13 @@ export default class TripPresenter {
     this._currentSortingType = SortingTypes.EVENT;
     this._eventPresenters = {};
     this._dayComponents = [];
+    this._isLoading = true;
 
     this._tripInfoComponent = null;
     this._sortingComponent = null;
+    this._pageMessageComponent = null;
 
     this._dayListComponent = new DayListView();
-    this._pageMessageComponent = new PageMessageView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -68,7 +75,7 @@ export default class TripPresenter {
   // 1) Нет событий - рендер собщения
   // -- меню
   // -- фильтры
-  // -- сообщение (PageMessageView / _renderNoEvents)
+  // -- сообщение (PageMessageView / _renderPageMassage)
   // 2) Есть события/нет сортировки - рендер вместе с днями
   // -- меню
   // -- фильтры
@@ -153,6 +160,12 @@ export default class TripPresenter {
         this._clearTrip({resetSortingType: true});
         this._renderTrip();
         break;
+      case UpdateType.INIT:
+        // - при загрузке или ошибки загрузки данных
+        this._isLoading = false;
+        remove(this._pageMessageComponent);
+        this._renderTrip();
+        break;
     }
   }
 
@@ -220,8 +233,13 @@ export default class TripPresenter {
     }
   }
 
-  _renderNoEvents() {
+  _renderPageMassage(messagePage) {
     // рендер сообщение о отсутствии событий
+    if (this._pageMessageComponent !== null) {
+      this._pageMessageComponent = null;
+    }
+
+    this._pageMessageComponent = new PageMessageView(messagePage);
     render(this._tripContainer, this._pageMessageComponent);
   }
 
@@ -251,10 +269,15 @@ export default class TripPresenter {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      this._renderPageMassage(MessagePage.LOADING);
+      return;
+    }
+
     const events = this._getEvents();
 
     if (events.length === 0) {
-      this._renderNoEvents();
+      this._renderPageMassage(MessagePage.NO_EVENT);
       return;
     }
 

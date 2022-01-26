@@ -1,6 +1,6 @@
 import EventEditView from '../view/event-edit.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {generateId} from '../mock/event.js';
+import {generateId} from '../utils/common.js';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class EventNewPresenter {

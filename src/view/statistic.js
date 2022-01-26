@@ -1,7 +1,7 @@
 import AbstractView from "./abstract.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {getFormatDuration} from '../utils/date.js';
-import {EVENT_TRANSPORT, EVENT_EMOJI} from "../mock/event.js";
+import {EVENT_TRANSPORT, EVENT_EMOJI} from '../const.js';
 import {Chart, BarElement, BarController, CategoryScale, LinearScale, Title} from "chart.js";
 Chart.register(BarElement, BarController, CategoryScale, LinearScale, Title);
 

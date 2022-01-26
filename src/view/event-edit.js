@@ -1,8 +1,8 @@
-import {EVENT_TRANSPORT, EVENT_ACTIVITY, allTypesOfEvents, eventWithSyntax} from '../mock/event.js';
 import {capitalizeStr} from '../utils/common.js';
 import {getFullDateWithSlash} from '../utils/date.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
+import {EVENT_TRANSPORT, EVENT_ACTIVITY, eventWithSyntax, allTypesOfEvents} from '../const.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 

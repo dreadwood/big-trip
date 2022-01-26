@@ -36,7 +36,7 @@ const PARTS_OF_DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-export const generateDestination = (city) => {
+const generateDestination = (city) => {
   const description = new Array(getRandomInteger(SentencesDescription.MIN, SentencesDescription.MAX))
     .fill(``).map(() => getRandomArrayItems(PARTS_OF_DESCRIPTION)).join(` `);
 
