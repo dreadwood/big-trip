@@ -1,3 +1,4 @@
+import DestinationsModel from './destinations.js';
 import Observer from './observer.js';
 
 export default class EventsModel extends Observer {
@@ -59,14 +60,7 @@ export default class EventsModel extends Observer {
       isFavorites: event.is_favorite,
       startDate: new Date(event.date_from),
       endDate: new Date(event.date_to),
-      destination: {
-        city: event.destination.name,
-        description: event.destination.description,
-        photos: event.destination.pictures.map((photo) => ({
-          src: photo.src,
-          alt: photo.description,
-        })),
-      },
+      destination: DestinationsModel.adaptToClient(event.destination),
     };
 
     delete adaptedEvent.base_price;
@@ -84,14 +78,7 @@ export default class EventsModel extends Observer {
       'is_favorite': event.isFavorites,
       'date_from': event.startDate.toISOString(),
       'date_to': event.endDate.toISOString(),
-      "destination": {
-        name: event.destination.city,
-        description: event.destination.description,
-        pictures: event.destination.photos.map((photo) => ({
-          src: photo.src,
-          description: photo.alt,
-        })),
-      },
+      'destination': DestinationsModel.adaptToServer(event.destination),
     };
 
     delete adaptedEvent.cost;

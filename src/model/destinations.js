@@ -26,4 +26,20 @@ export default class DestinationsModel {
 
     return adaptedDestination;
   }
+
+  static adaptToServer(destination) {
+    const adaptedDestination = {
+      ...destination,
+      name: destination.city,
+      pictures: destination.photos.map((photo) => ({
+        src: photo.src,
+        description: photo.alt,
+      })),
+    };
+
+    delete adaptedDestination.city;
+    delete adaptedDestination.photos;
+
+    return adaptedDestination;
+  }
 }
