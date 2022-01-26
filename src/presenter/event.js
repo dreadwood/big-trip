@@ -9,6 +9,12 @@ const Mode = {
   EDITING: `EDITING`,
 };
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`,
+};
+
 export default class EventPresenter {
   constructor(dayСontainer, offersModel, destinationsModel, changeData, changeMode) {
     this._dayСontainer = dayСontainer;
@@ -58,7 +64,8 @@ export default class EventPresenter {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._eventEditComponent, prevEventEditComponent);
+      replace(this._eventComponent, prevEventEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevEventComponent);
@@ -74,6 +81,34 @@ export default class EventPresenter {
     if (this._mode !== Mode.DEFAULT) {
       this._eventEditComponent.reset(this._event);
       this._replaceFormToCard();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._eventEditComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -106,13 +141,10 @@ export default class EventPresenter {
     this._changeData(
         UserAction.UPDATE_EVENT,
         UpdateType.MINOR,
-        Object.assign(
-            {},
-            event,
-            {
-              isFavorites: !this._event.isFavorites,
-            },
-        ),
+        {
+          ...event,
+          isFavorites: !this._event.isFavorites,
+        },
     );
   }
 
@@ -127,7 +159,6 @@ export default class EventPresenter {
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         update,
     );
-    this._replaceFormToCard();
   }
 
   _handleDeleteClick(event) {

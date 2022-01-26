@@ -3,7 +3,7 @@ import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
 import TripInfoView from '../view/trip-info.js';
 import PageMessageView from '../view/page-message.js';
-import EventPresenter from './event.js';
+import EventPresenter, {State as EventPresenterViewState} from './event.js';
 import EventNewPresenter from './event-new.js';
 import {render, remove} from '../utils/render.js';
 import {getDurationEvent} from '../utils/date.js';
@@ -124,26 +124,28 @@ export default class TripPresenter {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // Здесь будем вызывать обновление модели.
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
 
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._api.updateEvent(update).then((response) => {
-          this._eventsModel.updateEvent(updateType, response);
-        });
+        this._eventPresenters[update.id].setViewState(EventPresenterViewState.SAVING);
+        this._api.updateEvent(update)
+          .then((response) => this._eventsModel.updateEvent(updateType, response))
+          .catch(() => this._eventPresenters[update.id].setViewState(EventPresenterViewState.ABORTING));
         break;
       case UserAction.ADD_EVENT:
-        this._api.addEvent(update).then((response) => {
-          this._eventsModel.addEvent(updateType, response);
-        });
+        this._eventNewPresenter.setSaving();
+        this._api.addEvent(update)
+          .then((response) => this._eventsModel.addEvent(updateType, response))
+          .catch(() => this._eventNewPresenter.setAbording());
         break;
       case UserAction.DELETE_EVENT:
-        this._api.deleteEvent(update).then(() => {
-          this._eventsModel.deleteEvent(updateType, update);
-        });
+        this._eventPresenters[update.id].setViewState(EventPresenterViewState.DELETING);
+        this._api.deleteEvent(update)
+          .then(() => this._eventsModel.deleteEvent(updateType, update))
+          .catch(() => this._eventPresenters[update.id].setViewState(EventPresenterViewState.ABORTING));
         break;
     }
 
@@ -268,7 +270,7 @@ export default class TripPresenter {
     // удаления сообщения о отсутствия задач
     remove(this._pageMessageComponent);
     // удаления списка дней
-    remove(this._dayListComponent); // TODO: возможно его здесь не должно быть
+    remove(this._dayListComponent); // возможно его здесь не должно быть
 
     if (resetSortingType) {
       this._currentSortingType = SortingTypes.EVENT;
