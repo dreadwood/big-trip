@@ -27,7 +27,7 @@ export const getShortDateInversion = (date) => { // AUG 19
 export const getFormatDuration = (durationInMs) => { // 1D 1H 25M
   const minutes = moment.duration(durationInMs, `ms`).minutes();
   const hours = moment.duration(durationInMs, `ms`).hours();
-  const days = moment.duration(durationInMs, `ms`).days();
+  const days = Math.floor(moment.duration(durationInMs, `ms`).asDays());
 
   const d = days ? `${days}D` : ``;
   const h = hours ? `${hours}H` : ``;
