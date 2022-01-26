@@ -39,7 +39,10 @@ const createTripInfoTemplate = (events) => {
 
   const routeTemplate = cityQuantity ? createRouteTemplate(events, cityQuantity) : ``;
   const datesTemplate = cityQuantity ? createDatesTemplate(events) : ``;
-  const fullCost = cityQuantity ? events.reduce((acc, event) => (acc + event.cost), 0) : 0;
+  const fullCost = events.reduce((acc, event) => {
+    const offersCost = event.offers.reduce((offerAcc, offer) => (offerAcc + offer.price), 0);
+    return acc + event.cost + offersCost;
+  }, 0);
 
   return (
     `<section class="trip-info">
