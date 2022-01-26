@@ -37,6 +37,7 @@ const tripPresenter = new TripPresenter(
     filterModel,
     offersModel,
     destinationsModel,
+    api,
 );
 
 const menuComponent = new MenuView();

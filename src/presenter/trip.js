@@ -20,7 +20,7 @@ const sortDuration = (eventA, eventB) => getDurationEvent(eventB) - getDurationE
 const sortPrice = (eventA, eventB) => eventB.cost - eventA.cost;
 
 export default class TripPresenter {
-  constructor(pageContainer, tripInfoContainer, eventsModel, filterModel, offersModel, destinationsModel) {
+  constructor(pageContainer, tripInfoContainer, eventsModel, filterModel, offersModel, destinationsModel, api) {
     this._tripInfoContainer = tripInfoContainer;
     this._pageContainer = pageContainer;
     this._tripContainer = pageContainer.querySelector(`.trip-events__trip-days`);
@@ -33,6 +33,7 @@ export default class TripPresenter {
     this._eventPresenters = {};
     this._dayComponents = [];
     this._isLoading = true;
+    this._api = api;
 
     this._tripInfoComponent = null;
     this._sortingComponent = null;
@@ -130,7 +131,9 @@ export default class TripPresenter {
 
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._api.updateEvent(update).then((response) => {
+          this._eventsModel.updateEvent(updateType, response);
+        });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);
