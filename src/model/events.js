@@ -49,4 +49,54 @@ export default class EventsModel extends Observer {
   _sortEvents(events) {
     this._events = events.slice().sort((a, b) => a.startDate - b.startDate);
   }
+
+  static adaptToClient(event) {
+    const adaptedEvent = {
+      ...event,
+      cost: event.base_price,
+      isFavorites: event.is_favorite,
+      startDate: new Date(event.date_from),
+      endDate: new Date(event.date_to),
+      destination: {
+        city: event.destination.name,
+        description: event.destination.description,
+        photos: event.destination.pictures.map((photo) => ({
+          src: photo.src,
+          alt: photo.description,
+        })),
+      },
+    };
+
+    delete adaptedEvent.base_price;
+    delete adaptedEvent.is_favorite;
+    delete adaptedEvent.date_from;
+    delete adaptedEvent.date_to;
+
+    return adaptedEvent;
+  }
+
+  static adaptToServer(event) {
+    const adaptedEvent = {
+      ...event,
+      'base_price': event.cost,
+      'is_favorite': event.isFavorites,
+      'date_from': event.startDate.toISOString(),
+      'date_to': event.endDate.toISOString(),
+      "destination": {
+        name: event.destination.city,
+        description: event.destination.description,
+        pictures: event.destination.photos.map((photo) => ({
+          src: photo.src,
+          description: photo.alt,
+        })),
+      },
+    };
+
+    delete adaptedEvent.cost;
+    delete adaptedEvent.isFavorites;
+    delete adaptedEvent.startDate;
+    delete adaptedEvent.endDate;
+
+    return adaptedEvent;
+  }
 }

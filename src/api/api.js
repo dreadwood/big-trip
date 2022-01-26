@@ -1,3 +1,6 @@
+import DestinationsModel from '../model/destinations';
+import EventsModel from '../model/events';
+
 const Method = {
   GET: `GET`,
   PUT: `PUT`,
@@ -18,12 +21,14 @@ export default class Api {
 
   getEvents() {
     return this._load({url: `points`})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then((events) => events.map(EventsModel.adaptToClient));
   }
 
   getDestinations() {
     return this._load({url: `destinations`})
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
   }
 
   getOffers() {
@@ -38,7 +43,8 @@ export default class Api {
       body: JSON.stringify(event),
       headers: new Headers({"Content-Type": `application/json`}),
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
   }
 
   addEvent(event) {
@@ -48,7 +54,8 @@ export default class Api {
       body: JSON.stringify(event),
       headers: new Headers({"Content-Type": `application/json`}),
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
   }
 
   deleteEvent(event) {
