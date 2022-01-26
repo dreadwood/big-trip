@@ -617,7 +617,7 @@ main {
   .event__type-label::before {
     content: "";
     position: absolute;
-    top: calc(50% - 3px);
+    top: calc(50% - 1px);
     left: 32px;
     width: 17px;
     height: 17px;
@@ -908,13 +908,17 @@ main {
 
 .event__photos-container {
   width: 100%;
-  overflow-x: scroll; }
+  overflow-x: scroll;
+  scrollbar-width: none; }
+  .event__photos-container::-webkit-scrollbar {
+    display: none; }
 
 .event__photos-tape {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: start;
       align-items: flex-start; }
+
 
 .event__photo {
   display: block;
@@ -934,3 +938,22 @@ main {
 
 .statistics__item:not(:last-child) {
   margin-bottom: 78px; }
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0); }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px); }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px); } }
+
+.shake {
+  animation: shake 0.6s; }
