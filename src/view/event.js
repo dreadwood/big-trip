@@ -1,6 +1,6 @@
 import {eventWithSyntax} from '../const.js';
 import {getTime, getFormatDuration, getFullDatetime} from '../utils/date.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const MAX_VISIBLE_OFFERS = 3;
 

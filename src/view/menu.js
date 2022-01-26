@@ -1,5 +1,5 @@
-import AbstractView from "./abstract.js";
-import {MenuTabs} from "../const.js";
+import AbstractView from './abstract.js';
+import {MenuTabs} from '../const.js';
 
 const createMenuTemplate = (selectedTab) => {
   return (

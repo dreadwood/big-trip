@@ -1,5 +1,5 @@
 import {getShortDate} from '../utils/date.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createRouteTemplate = (events, cityQuantity) => {
   const firstCity = events[0].destination.city;

@@ -56,7 +56,6 @@ export default class FilterPresenter {
   }
 
   _getFilters() {
-    // масив типов фильтров и колличество событий по каждому из них
     const events = this._eventsModel.getEvents();
 
     return Object.entries(filter).map(([type, filterEvents]) => {

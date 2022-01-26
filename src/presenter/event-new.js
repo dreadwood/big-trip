@@ -69,7 +69,10 @@ export default class EventNewPresenter {
     this._changeData(
         UserAction.ADD_EVENT,
         UpdateType.MINOR,
-        Object.assign(event, {id: String(generateId())}),
+        {
+          ...event,
+          id: String(generateId()),
+        },
     );
     this.destroy();
   }

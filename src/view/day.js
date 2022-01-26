@@ -1,5 +1,5 @@
 import {getDatetime, getShortDateInversion} from '../utils/date.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createDayInfoTemplate = (date, i) => {
   const dateElement = new Date(date);

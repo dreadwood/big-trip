@@ -1,5 +1,5 @@
 import {capitalizeStr} from '../utils/common.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createFiltersTemplate = (filterItems, currentFilter) => {
   return (
