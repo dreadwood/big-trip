@@ -9,5 +9,9 @@ env:
 
 extends: 'htmlacademy/es6'
 
+plugins: ['import-quotes']
+
 rules:
+  import-quotes/import-quotes: ['error', 'single']
+  rest-spread-spacing: ['error', 'never']
   comma-dangle: ['error', 'always-multiline']
