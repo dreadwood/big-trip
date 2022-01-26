@@ -96,6 +96,7 @@ const createDestinationInputTemplate = (selectedType, city, cities) => {
         name="event-destination"
         value="${city}"
         list="destination-list"
+        required
       >
       <datalist id="destination-list">
         ${cities.map((cityItem) => `<option value="${cityItem}"></option>`).join(`\n`)}

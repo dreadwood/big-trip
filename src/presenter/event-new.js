@@ -49,8 +49,8 @@ export default class EventNewPresenter {
   _handleFormSubmit(event) {
     this._changeData(
         UserAction.ADD_EVENT,
-        UpdateType.MINOR, // возможно мажор, тк изменяеться фильтры (кол-во)
-        Object.assign(event, {id: generateId()}),
+        UpdateType.MINOR,
+        Object.assign(event, {id: String(generateId())}),
     );
     this.destroy();
   }

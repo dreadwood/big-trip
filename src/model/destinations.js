@@ -21,7 +21,7 @@ export default class DestinationsModel {
       })),
     };
 
-    delete adaptedDestination.city;
+    delete adaptedDestination.name;
     delete adaptedDestination.pictures;
 
     return adaptedDestination;

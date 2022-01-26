@@ -41,7 +41,6 @@ export const EVENT_TRANSPORT = [
   `bus`,
   `train`,
   `ship`,
-  `transport`,
   `drive`,
   `flight`,
 ];
@@ -57,7 +56,6 @@ export const EVENT_EMOJI = {
   'bus': `🚌`,
   'train': `🚂`,
   'ship': `🚢`,
-  'transport': `🚆`,
   'drive': `🚗`,
   'flight': `✈️`,
   'check-in': `🏨`,
