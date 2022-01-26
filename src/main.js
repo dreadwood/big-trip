@@ -40,7 +40,7 @@ const tripPresenter = new TripPresenter(
 );
 
 const menuComponent = new MenuView();
-render(tabsContainer, menuComponent); // меню (table, stat)
+
 
 let statisticComponent = null;
 
@@ -85,7 +85,9 @@ Promise.all([
     offersModel.setOffers(offers);
     destinationsModel.setDestinations(destinations);
     eventsModel.setEvents(UpdateType.INIT, events);
+    render(tabsContainer, menuComponent);
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
+    render(tabsContainer, menuComponent);
   });
